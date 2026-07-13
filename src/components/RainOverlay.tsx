@@ -22,14 +22,14 @@ type Ripple = {
 }
 
 type ImpactDrop = {
-  startX: number
-  startY: number
-  targetX: number
-  targetY: number
-  progress: number
+  x: number
+  y: number
+  impactY: number
   speed: number
-  size: number
+  length: number
+  width: number
   opacity: number
+  wind: number
   heavy: boolean
 }
 
@@ -136,36 +136,17 @@ export function RainOverlay() {
       }
     }
 
-    const createImpactDrop = (heavy = Math.random() < 0.28): ImpactDrop => {
-      const targetX = w * (0.08 + Math.random() * 0.84)
-      const targetY = h * (0.06 + Math.random() * 0.82)
-      const edge = Math.floor(Math.random() * 3)
-
-      let startX = targetX
-      let startY = targetY
-      if (edge === 0) {
-        startX = targetX + (Math.random() - 0.5) * w * 0.45
-        startY = -50 - Math.random() * 120
-      } else if (edge === 1) {
-        startX = w + 40 + Math.random() * 90
-        startY = targetY - h * (0.1 + Math.random() * 0.28)
-      } else {
-        startX = -40 - Math.random() * 90
-        startY = targetY - h * (0.1 + Math.random() * 0.28)
-      }
-
-      return {
-        startX,
-        startY,
-        targetX,
-        targetY,
-        progress: 0,
-        speed: heavy ? 0.032 + Math.random() * 0.028 : 0.022 + Math.random() * 0.026,
-        size: heavy ? 2.4 + Math.random() * 2.8 : 1.4 + Math.random() * 2.2,
-        opacity: heavy ? 0.65 + Math.random() * 0.3 : 0.45 + Math.random() * 0.35,
-        heavy,
-      }
-    }
+    const createImpactDrop = (heavy = Math.random() < 0.22): ImpactDrop => ({
+      x: Math.random() * w,
+      y: -20 - Math.random() * 180,
+      impactY: h * (0.1 + Math.random() * 0.82),
+      speed: (heavy ? 18 : 11) + Math.random() * 12,
+      length: (heavy ? 22 : 14) + Math.random() * 20,
+      width: heavy ? 1.1 + Math.random() * 0.9 : 0.55 + Math.random() * 0.65,
+      opacity: heavy ? 0.55 + Math.random() * 0.35 : 0.32 + Math.random() * 0.38,
+      wind: (Math.random() - 0.5) * WIND_DRIFT,
+      heavy,
+    })
 
     const spawnScreenSplash = (x: number, y: number, heavy: boolean) => {
       const intensity = heavy ? 1.2 + Math.random() * 0.5 : 0.75 + Math.random() * 0.45
@@ -233,37 +214,37 @@ export function RainOverlay() {
         })
       }
 
-      const maxSplashes = coarse ? 18 : 36
+      const maxSplashes = coarse ? 28 : 50
       if (splashesRef.current.length > maxSplashes) {
         splashesRef.current.splice(0, splashesRef.current.length - maxSplashes)
       }
     }
 
     const spawnDrop = () => {
-      const chance = coarse ? 0.82 : 0.94
+      const chance = coarse ? 0.45 : 0.55
       if (Math.random() > chance) return
 
-      const count = coarse
-        ? 2 + Math.floor(Math.random() * 2)
-        : Math.random() < 0.25 ? 5 : Math.random() < 0.55 ? 4 : 3
+      const count = coarse ? 1 : Math.random() < 0.4 ? 2 : 1
       for (let i = 0; i < count; i++) {
         dropsRef.current.push(createDrop())
       }
-      const max = coarse ? 200 : 420
+      const max = coarse ? 60 : 100
       if (dropsRef.current.length > max) {
         dropsRef.current.splice(0, dropsRef.current.length - max)
       }
     }
 
     const spawnImpactDrop = () => {
-      const interval = coarse ? 0.012 : 0.022
-      if (Math.random() > interval) return
-      const maxImpacts = coarse ? 5 : 10
+      const chance = coarse ? 0.78 : 0.9
+      if (Math.random() > chance) return
+      const maxImpacts = coarse ? 160 : 320
       if (impactsRef.current.length >= maxImpacts) return
 
-      impactsRef.current.push(createImpactDrop())
-      if (!coarse && Math.random() < 0.18) {
-        impactsRef.current.push(createImpactDrop(Math.random() < 0.4))
+      const count = coarse
+        ? 2 + Math.floor(Math.random() * 2)
+        : Math.random() < 0.3 ? 4 : Math.random() < 0.6 ? 3 : 2
+      for (let i = 0; i < count; i++) {
+        impactsRef.current.push(createImpactDrop())
       }
     }
 
@@ -305,44 +286,30 @@ export function RainOverlay() {
       }
     }
 
-    const drawImpactDrop = (drop: ImpactDrop) => {
-      const t = Math.pow(drop.progress, drop.heavy ? 1.6 : 1.9)
-      const x = drop.startX + (drop.targetX - drop.startX) * t
-      const y = drop.startY + (drop.targetY - drop.startY) * t
-      const size = drop.size * (0.35 + t * (drop.heavy ? 3.2 : 2.4))
-      const alpha = drop.opacity * (0.3 + t * 0.7)
+    const drawImpactDrop = (d: ImpactDrop, x: number, y: number) => {
+      const tailX = x - d.wind * 2
+      const tailY = y - d.length
 
-      const trailT = Math.max(0, t - (drop.heavy ? 0.18 : 0.12))
-      const tx = drop.startX + (drop.targetX - drop.startX) * trailT
-      const ty = drop.startY + (drop.targetY - drop.startY) * trailT
-
-      const streak = ctx.createLinearGradient(tx, ty, x, y)
-      streak.addColorStop(0, `rgba(200, 220, 245, 0)`)
-      streak.addColorStop(0.5, `rgba(220, 235, 250, ${alpha * 0.3})`)
-      streak.addColorStop(1, `rgba(245, 250, 255, ${alpha})`)
+      const grad = ctx.createLinearGradient(tailX, tailY, x, y)
+      grad.addColorStop(0, `rgba(170, 195, 225, 0)`)
+      grad.addColorStop(0.4, `rgba(200, 220, 245, ${d.opacity * 0.3})`)
+      grad.addColorStop(0.85, `rgba(225, 238, 252, ${d.opacity * 0.8})`)
+      grad.addColorStop(1, `rgba(245, 250, 255, ${Math.min(d.opacity * 1.15, 0.98)})`)
 
       ctx.beginPath()
-      ctx.strokeStyle = streak
-      ctx.lineWidth = size * (drop.heavy ? 0.55 : 0.45)
+      ctx.strokeStyle = grad
+      ctx.lineWidth = d.width
       ctx.lineCap = 'round'
-      ctx.moveTo(tx, ty)
+      ctx.moveTo(tailX, tailY)
       ctx.lineTo(x, y)
       ctx.stroke()
 
-      const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 2.4)
-      glow.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.95})`)
-      glow.addColorStop(0.3, `rgba(235, 245, 255, ${alpha * 0.55})`)
-      glow.addColorStop(1, `rgba(200, 220, 245, 0)`)
-
-      ctx.beginPath()
-      ctx.fillStyle = glow
-      ctx.arc(x, y, size * 2.4, 0, Math.PI * 2)
-      ctx.fill()
-
-      ctx.beginPath()
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`
-      ctx.arc(x, y, size * 0.5, 0, Math.PI * 2)
-      ctx.fill()
+      if (d.heavy) {
+        ctx.beginPath()
+        ctx.fillStyle = `rgba(240, 248, 255, ${d.opacity * 0.55})`
+        ctx.arc(x, y, d.width * 0.65, 0, Math.PI * 2)
+        ctx.fill()
+      }
     }
 
     const drawScreenSplash = (s: ScreenSplash) => {
@@ -441,12 +408,16 @@ export function RainOverlay() {
     }
 
     let lastSpawn = 0
+    let lastImpactSpawn = 0
     const draw = (now: number) => {
-      if (now - lastSpawn > (coarse ? 28 : 10)) {
+      if (now - lastSpawn > (coarse ? 45 : 30)) {
         spawnDrop()
         lastSpawn = now
       }
-      spawnImpactDrop()
+      if (now - lastImpactSpawn > (coarse ? 10 : 6)) {
+        spawnImpactDrop()
+        lastImpactSpawn = now
+      }
 
       ctx.clearRect(0, 0, w, h)
 
@@ -465,12 +436,13 @@ export function RainOverlay() {
 
       const nextImpacts: ImpactDrop[] = []
       for (const drop of impactsRef.current) {
-        const progress = drop.progress + drop.speed
-        if (progress < 1) {
-          nextImpacts.push({ ...drop, progress })
-          drawImpactDrop({ ...drop, progress })
+        const ny = drop.y + drop.speed
+        const nx = drop.x + drop.wind * 0.4
+        drawImpactDrop(drop, nx, ny)
+        if (ny < drop.impactY) {
+          nextImpacts.push({ ...drop, x: nx, y: ny })
         } else {
-          spawnScreenSplash(drop.targetX, drop.targetY, drop.heavy)
+          spawnScreenSplash(nx, drop.impactY, drop.heavy)
         }
       }
       impactsRef.current = nextImpacts
@@ -520,9 +492,15 @@ export function RainOverlay() {
     }
 
     resize()
-    const seedCount = coarse ? 120 : 280
-    for (let i = 0; i < seedCount; i++) {
+    const bgSeed = coarse ? 30 : 50
+    const impactSeed = coarse ? 100 : 220
+    for (let i = 0; i < bgSeed; i++) {
       dropsRef.current.push(createDrop(true))
+    }
+    for (let i = 0; i < impactSeed; i++) {
+      const drop = createImpactDrop()
+      drop.y = -20 - Math.random() * h
+      impactsRef.current.push(drop)
     }
     window.addEventListener('resize', resize)
     rafRef.current = requestAnimationFrame(draw)
