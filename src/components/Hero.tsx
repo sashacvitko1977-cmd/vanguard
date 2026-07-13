@@ -29,7 +29,7 @@ export function Hero() {
           >
             <span className="font-display text-xs text-violet-400/70">00</span>
             <span className="h-px w-6 bg-violet-500/50" />
-            <span className="rounded-full border border-white/10 bg-black/25 px-4 py-1.5 font-inter text-[10px] uppercase tracking-[0.22em] text-white/50 backdrop-blur-sm">
+            <span className="rounded-full border border-white/10 bg-black/20 px-4 py-1.5 font-inter text-[10px] uppercase tracking-[0.22em] text-white/50">
               Креативная Web3-студия
             </span>
           </motion.div>
@@ -78,7 +78,7 @@ export function Hero() {
             </MagneticButton>
 
             <span className="hidden font-inter text-[10px] uppercase tracking-widest text-white/40 sm:inline">
-              ↓ Листай — персонаж оживает
+              ↓ Листай вниз
             </span>
           </motion.div>
 

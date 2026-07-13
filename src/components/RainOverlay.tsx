@@ -48,38 +48,40 @@ export function RainOverlay() {
       ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
     }
 
+    const createDrop = (randomY = false) => ({
+      x: Math.random() * w,
+      y: randomY ? Math.random() * h : -20 - Math.random() * 80,
+      speed: 12 + Math.random() * 18,
+      length: 16 + Math.random() * 28,
+      width: 1 + Math.random() * 1.5,
+      opacity: 0.35 + Math.random() * 0.45,
+      drift: -0.8 + Math.random() * 1.6,
+    })
+
     const spawnDrop = () => {
-      const count = coarse ? 1 : Math.random() > 0.6 ? 2 : 1
+      const count = coarse ? 2 : Math.random() > 0.4 ? 3 : 2
       for (let i = 0; i < count; i++) {
-        dropsRef.current.push({
-          x: Math.random() * w,
-          y: -20 - Math.random() * 80,
-          speed: 9 + Math.random() * 14,
-          length: 12 + Math.random() * 22,
-          width: 0.6 + Math.random() * 1.2,
-          opacity: 0.15 + Math.random() * 0.35,
-          drift: -0.5 + Math.random(),
-        })
+        dropsRef.current.push(createDrop())
       }
-      if (dropsRef.current.length > (coarse ? 60 : 140)) {
-        dropsRef.current.splice(0, 10)
+      if (dropsRef.current.length > (coarse ? 100 : 200)) {
+        dropsRef.current.splice(0, 15)
       }
     }
 
     const spawnSplash = (x: number, y: number) => {
-      if (Math.random() > 0.35) return
+      if (Math.random() > 0.25) return
       splashesRef.current.push({
         x,
         y,
-        radius: 2 + Math.random() * 4,
-        opacity: 0.25 + Math.random() * 0.3,
+        radius: 2 + Math.random() * 5,
+        opacity: 0.4 + Math.random() * 0.35,
         life: 1,
       })
     }
 
     let lastSpawn = 0
     const draw = (now: number) => {
-      if (now - lastSpawn > (coarse ? 90 : 45)) {
+      if (now - lastSpawn > (coarse ? 60 : 30)) {
         spawnDrop()
         lastSpawn = now
       }
@@ -92,11 +94,11 @@ export function RainOverlay() {
         const nx = d.x + d.drift
 
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(180, 210, 255, ${d.opacity})`
+        ctx.strokeStyle = `rgba(220, 235, 255, ${d.opacity})`
         ctx.lineWidth = d.width
         ctx.lineCap = 'round'
         ctx.moveTo(nx, ny)
-        ctx.lineTo(nx - d.drift * 3, ny - d.length)
+        ctx.lineTo(nx - d.drift * 4, ny - d.length)
         ctx.stroke()
 
         if (ny < h + 30) {
@@ -108,14 +110,14 @@ export function RainOverlay() {
       dropsRef.current = nextDrops
 
       splashesRef.current = splashesRef.current.filter((s) => {
-        s.life -= 0.06
-        s.radius += 0.4
-        s.opacity *= 0.92
+        s.life -= 0.05
+        s.radius += 0.5
+        s.opacity *= 0.9
         if (s.life <= 0) return false
 
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(200, 220, 255, ${s.opacity})`
-        ctx.lineWidth = 0.8
+        ctx.strokeStyle = `rgba(200, 225, 255, ${s.opacity})`
+        ctx.lineWidth = 1
         ctx.ellipse(s.x, s.y, s.radius, s.radius * 0.35, 0, 0, Math.PI * 2)
         ctx.stroke()
         return true
@@ -125,6 +127,9 @@ export function RainOverlay() {
     }
 
     resize()
+    for (let i = 0; i < (coarse ? 60 : 120); i++) {
+      dropsRef.current.push(createDrop(true))
+    }
     window.addEventListener('resize', resize)
     rafRef.current = requestAnimationFrame(draw)
 
@@ -137,7 +142,7 @@ export function RainOverlay() {
   return (
     <canvas
       ref={canvasRef}
-      className="rain-overlay pointer-events-none fixed inset-0 z-[15]"
+      className="rain-overlay pointer-events-none fixed inset-0 z-[30]"
       aria-hidden="true"
     />
   )

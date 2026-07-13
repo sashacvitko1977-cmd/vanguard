@@ -47,7 +47,7 @@ export function LaunchBlock({ onWallet, onSubmit }: Props) {
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-4 rounded-2xl border border-white/[0.08] bg-[var(--surface)] p-6 sm:grid-cols-[1fr_1fr_auto]"
+        className="grid gap-4 rounded-2xl border border-white/[0.08] bg-black/20 p-6 sm:grid-cols-[1fr_1fr_auto]"
       >
         <label className="block">
           <span className="mb-2 block font-inter text-[10px] uppercase tracking-widest text-white/38">

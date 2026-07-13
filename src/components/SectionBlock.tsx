@@ -6,20 +6,6 @@ import { getSectionEntrance } from '../lib/sectionMotion'
 import { FeatureCard } from './FeatureCard'
 import { LaunchBlock } from './LaunchBlock'
 
-const SECTION_GLOW: Record<string, { color: string; position: string }> = {
-  projects: { color: 'rgba(139,92,246,0.22)', position: 'top-0 -right-20 h-[480px] w-[480px]' },
-  ecosystem: { color: 'rgba(34,211,238,0.15)', position: 'top-10 -left-20 h-[400px] w-[400px]' },
-  services: { color: 'rgba(251,191,36,0.12)', position: 'bottom-0 right-0 h-[360px] w-[360px]' },
-  launch: { color: 'rgba(244,63,94,0.14)', position: 'top-1/4 left-1/3 h-[440px] w-[440px]' },
-}
-
-const SECTION_SURFACE: Record<string, string> = {
-  projects: 'from-violet-950/25 via-black/35 to-black/45',
-  ecosystem: 'from-cyan-950/20 via-black/30 to-black/45',
-  services: 'from-amber-950/15 via-black/32 to-black/45',
-  launch: 'from-rose-950/20 via-black/30 to-black/45',
-}
-
 const SECTION_NUM: Record<string, string> = {
   projects: '01',
   ecosystem: '02',
@@ -48,8 +34,6 @@ export function SectionBlock({
   const inView = useInView(ref, sectionViewport)
   const entrance = getSectionEntrance(section.id)
   const isProjects = section.id === 'projects'
-  const glow = SECTION_GLOW[section.id]
-  const surface = SECTION_SURFACE[section.id] ?? SECTION_SURFACE.projects
   const sectionNum = SECTION_NUM[section.id] ?? '00'
   const impactLine = IMPACT_LINE[section.id] ?? 'bg-violet-400'
 
@@ -78,19 +62,6 @@ export function SectionBlock({
           animate={inView ? { scaleX: 1, opacity: [0, 1, 0.6] } : { scaleX: 0, opacity: 0 }}
           transition={{ duration: 0.12, ease: [1, 0, 0, 1] }}
         />
-
-        <div
-          className={`absolute inset-0 bg-gradient-to-b ${surface}`}
-          aria-hidden="true"
-        />
-
-        {glow && (
-          <div
-            className={`section-glow absolute ${glow.position}`}
-            style={{ background: glow.color }}
-            aria-hidden="true"
-          />
-        )}
 
         <div className="relative px-6 py-24 sm:px-10 lg:px-16">
           <div className="mx-auto max-w-6xl">

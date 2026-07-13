@@ -132,7 +132,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
         {card.mockup && (
           <div className={`relative overflow-hidden bg-gradient-to-br ${card.mockup.gradient} ${card.mockup.pattern ?? ''}`}>
             {/* Browser chrome */}
-            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-black/30 px-4 py-2.5 backdrop-blur-md">
+            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-black/20 px-4 py-2.5">
               <div className="flex gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-white/15" />
                 <span className="h-2 w-2 rounded-full bg-white/10" />
@@ -148,7 +148,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
 
             <div className="relative h-32 sm:h-36">
               <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(0,0,0,0.9)_100%)]" />
-              <div className={`absolute left-5 top-5 h-20 w-28 rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm ${a.mockupAccent}`} />
+              <div className={`absolute left-5 top-5 h-20 w-28 rounded-xl border border-white/10 bg-black/15 ${a.mockupAccent}`} />
               <div className="absolute right-5 top-6 h-14 w-20 rounded-lg border border-white/8 bg-white/[0.04]" />
               <div className="absolute bottom-4 left-5 flex items-center gap-2">
                 <div className={`flex h-7 w-7 items-center justify-center rounded-lg border ${a.icon}`}>
