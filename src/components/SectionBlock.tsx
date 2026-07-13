@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import type { SectionData } from '../lib/data'
-import { sectionViewport, textViewport, cardsViewport } from '../lib/motion'
+import { sectionViewport } from '../lib/motion'
 import { getSectionMotion } from '../lib/sectionMotion'
 import { FeatureCard } from './FeatureCard'
 import { LaunchBlock } from './LaunchBlock'
@@ -21,7 +21,6 @@ const SECTION_NUM: Record<string, string> = {
 
 export function SectionBlock({
   section,
-  index,
   onWallet,
   onLeadSubmit,
 }: {
@@ -52,68 +51,56 @@ export function SectionBlock({
         />
       )}
 
-      <div className="relative mx-auto max-w-6xl">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={sectionViewport}
-          variants={motionProfile.section}
-        >
-          <div className="relative mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={textViewport}
-              variants={motionProfile.textStagger}
-              className="relative max-w-2xl"
+      {/* Весь раздел влетает с края при скролле */}
+      <motion.div
+        className="relative mx-auto max-w-6xl"
+        initial="hidden"
+        whileInView="visible"
+        viewport={sectionViewport}
+        variants={motionProfile.section}
+        style={{ perspective: 1200 }}
+      >
+        <div className="relative mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <motion.div variants={motionProfile.textStagger} className="relative max-w-2xl">
+            <span
+              className="pointer-events-none absolute -left-2 -top-8 font-display text-[5rem] leading-none text-white/[0.03] sm:text-[7rem] lg:-left-6 lg:-top-12"
+              aria-hidden="true"
             >
-              <span
-                className="pointer-events-none absolute -left-2 -top-8 font-display text-[5rem] leading-none text-white/[0.03] sm:text-[7rem] lg:-left-6 lg:-top-12"
-                aria-hidden="true"
-              >
-                {sectionNum}
+              {sectionNum}
+            </span>
+
+            <motion.div variants={motionProfile.eyebrow} className="mb-3 flex items-center gap-3">
+              <span className="font-display text-sm text-violet-400/80">{sectionNum}</span>
+              <span className="h-px w-8 bg-violet-500/40" />
+              <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-[10px] uppercase tracking-[0.18em] text-white/50">
+                {section.eyebrow}
               </span>
-
-              <motion.div variants={motionProfile.eyebrow} className="mb-3 flex items-center gap-3">
-                <span className="font-display text-sm text-violet-400/80">{sectionNum}</span>
-                <span className="h-px w-8 bg-violet-500/40" />
-                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-[10px] uppercase tracking-[0.18em] text-white/50">
-                  {section.eyebrow}
-                </span>
-              </motion.div>
-
-              <motion.h2
-                variants={motionProfile.title}
-                className="text-balance font-display text-[clamp(1.75rem,4vw,2.75rem)] uppercase leading-[0.95] text-white"
-              >
-                {section.title}
-              </motion.h2>
-              <motion.p
-                variants={motionProfile.lead}
-                className="mt-4 max-w-lg text-sm leading-relaxed text-white/55"
-              >
-                {section.lead}
-              </motion.p>
             </motion.div>
 
-            <motion.div
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={sectionViewport}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="hidden h-px w-32 origin-left bg-gradient-to-r from-violet-500/60 to-transparent lg:block"
-            />
-          </div>
-        </motion.div>
+            <motion.h2
+              variants={motionProfile.title}
+              className="text-balance font-display text-[clamp(1.75rem,4vw,2.75rem)] uppercase leading-[0.95] text-white"
+            >
+              {section.title}
+            </motion.h2>
+            <motion.p
+              variants={motionProfile.lead}
+              className="mt-4 max-w-lg text-sm leading-relaxed text-white/55"
+            >
+              {section.lead}
+            </motion.p>
+          </motion.div>
+
+          <motion.div
+            variants={motionProfile.eyebrow}
+            className="hidden h-px w-32 origin-left bg-gradient-to-r from-violet-500/60 to-transparent lg:block"
+          />
+        </div>
 
         {section.cards.length > 0 && (
           <motion.div
             className={gridClass}
-            initial="hidden"
-            whileInView="visible"
-            viewport={cardsViewport}
             variants={motionProfile.cardStagger}
-            style={{ perspective: 1200 }}
           >
             {section.cards.map((card, i) => (
               <FeatureCard
@@ -128,10 +115,12 @@ export function SectionBlock({
           </motion.div>
         )}
 
-        {section.id === 'launch' && (
-          <LaunchBlock onWallet={onWallet} onSubmit={onLeadSubmit} />
+        {section.id === 'launch' && motionProfile.cta && (
+          <motion.div variants={motionProfile.cta}>
+            <LaunchBlock onWallet={onWallet} onSubmit={onLeadSubmit} />
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </section>
   )
 }

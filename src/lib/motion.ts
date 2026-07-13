@@ -13,46 +13,65 @@ const brutal = { duration: 0.18, ease: SNAP_BRUTAL }
 const hard = { duration: 0.2, ease: SNAP_HARD }
 
 /** Viewport-триггеры для scroll-reveal */
-export const sectionViewport = { once: true, margin: '-8% 0px -5% 0px', amount: 0.12 as const }
-export const textViewport = { once: true, margin: '-10% 0px -8% 0px', amount: 0.32 as const }
-export const cardsViewport = { once: true, margin: '-6% 0px -10% 0px', amount: 0.16 as const }
+export const sectionViewport = { once: true, margin: '0px 0px -8% 0px', amount: 0.18 as const }
+export const textViewport = { once: true, margin: '0px 0px -6% 0px', amount: 0.25 as const }
+export const cardsViewport = { once: true, margin: '0px 0px -10% 0px', amount: 0.12 as const }
 
-// ——— Уникальные входы разделов ———
+const sectionEnter = { duration: 0.72, ease: SNAP_BRUTAL }
 
-export const sectionSlamDown: Variants = {
-  hidden: { opacity: 0, y: 96, scaleY: 0.55, originY: 0 },
-  visible: { opacity: 1, y: 0, scaleY: 1, transition: { ...brutal, duration: 0.22 } },
+// ——— Вход раздела с края экрана ———
+
+/** Проекты — влет слева */
+export const sectionFromLeft: Variants = {
+  hidden: { opacity: 0, x: '-100vw', skewX: -4 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    skewX: 0,
+    transition: { ...sectionEnter, staggerChildren: 0.07, delayChildren: 0.12 },
+  },
 }
 
-export const sectionSlashLeft: Variants = {
-  hidden: { opacity: 0, x: -140, skewX: -10, scale: 0.94 },
-  visible: { opacity: 1, x: 0, skewX: 0, scale: 1, transition: brutal },
+/** Экосистема — влет справа */
+export const sectionFromRight: Variants = {
+  hidden: { opacity: 0, x: '100vw', skewX: 4 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    skewX: 0,
+    transition: { ...sectionEnter, staggerChildren: 0.07, delayChildren: 0.12 },
+  },
 }
 
-export const sectionPunchIn: Variants = {
-  hidden: { opacity: 0, scale: 1.22, rotate: -3, filter: 'brightness(1.4)' },
+/** Услуги — влет снизу */
+export const sectionFromBottom: Variants = {
+  hidden: { opacity: 0, y: '80vh', scale: 0.88, rotateX: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    rotateX: 0,
+    transition: { ...sectionEnter, duration: 0.68, staggerChildren: 0.06, delayChildren: 0.14 },
+  },
+}
+
+/** Запуск — появление из ниоткуда */
+export const sectionFromVoid: Variants = {
+  hidden: { opacity: 0, scale: 0.72, y: 80, filter: 'blur(20px)' },
   visible: {
     opacity: 1,
     scale: 1,
-    rotate: 0,
-    filter: 'brightness(1)',
-    transition: springBrutal,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.75, ease: SNAP_BRUTAL, staggerChildren: 0.08, delayChildren: 0.18 },
   },
 }
 
-export const sectionIgnite: Variants = {
-  hidden: {
-    opacity: 0,
-    clipPath: 'polygon(0 100%, 100% 100%, 100% 100%, 0 100%)',
-    y: 40,
-  },
-  visible: {
-    opacity: 1,
-    clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
-    y: 0,
-    transition: { duration: 0.24, ease: SNAP_BRUTAL },
-  },
-}
+// Legacy section variants
+export const sectionSlamDown = sectionFromBottom
+export const sectionSlashLeft = sectionFromLeft
+export const sectionPunchIn = sectionFromBottom
+export const sectionIgnite = sectionFromVoid
 
 // ——— Уникальные входы текста ———
 
@@ -157,23 +176,23 @@ export const cardFlipSlam: Variants = {
 }
 
 export const cardFromLeft: Variants = {
-  hidden: { opacity: 0, x: -88, skewX: -5, scale: 0.9 },
-  visible: { opacity: 1, x: 0, skewX: 0, scale: 1, transition: brutal },
+  hidden: { opacity: 0, x: -160, skewX: -6, scale: 0.88 },
+  visible: { opacity: 1, x: 0, skewX: 0, scale: 1, transition: { ...brutal, duration: 0.45 } },
 }
 
 export const cardFromRight: Variants = {
-  hidden: { opacity: 0, x: 88, skewX: 5, scale: 0.9 },
-  visible: { opacity: 1, x: 0, skewX: 0, scale: 1, transition: brutal },
+  hidden: { opacity: 0, x: 160, skewX: 6, scale: 0.88 },
+  visible: { opacity: 1, x: 0, skewX: 0, scale: 1, transition: { ...brutal, duration: 0.45 } },
 }
 
 export const cardZoomPunch: Variants = {
-  hidden: { opacity: 0, scale: 0.55, rotate: -4 },
-  visible: { opacity: 1, scale: 1, rotate: 0, transition: springBrutal },
+  hidden: { opacity: 0, scale: 0.4, rotate: -6, filter: 'blur(8px)' },
+  visible: { opacity: 1, scale: 1, rotate: 0, filter: 'blur(0px)', transition: springBrutal },
 }
 
 export const cardSlamUp: Variants = {
-  hidden: { opacity: 0, y: 80, scaleY: 0.6, originY: 1 },
-  visible: { opacity: 1, y: 0, scaleY: 1, transition: { ...brutal, duration: 0.17 } },
+  hidden: { opacity: 0, y: 120, scaleY: 0.7, originY: 1 },
+  visible: { opacity: 1, y: 0, scaleY: 1, transition: { ...brutal, duration: 0.42 } },
 }
 
 export const cardTiltIn: Variants = {

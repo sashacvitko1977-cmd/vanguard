@@ -1,7 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { motion } from 'framer-motion'
 import { ArrowUpRight, Send } from 'lucide-react'
-import { textSnap, cardsViewport } from '../lib/motion'
 import { MagneticButton } from './MagneticButton'
 import { Marquee } from './Marquee'
 
@@ -28,13 +26,7 @@ export function LaunchBlock({ onWallet, onSubmit }: Props) {
     <div className="mt-14 space-y-6">
       <Marquee />
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={cardsViewport}
-        variants={textSnap}
-        className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-violet-500/15 bg-violet-500/[0.04] px-6 py-5"
-      >
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-violet-500/15 bg-violet-500/[0.04] px-6 py-5">
         <div>
           <p className="font-inter text-[10px] uppercase tracking-widest text-violet-300/70">
             Лимит на месяц
@@ -51,13 +43,9 @@ export function LaunchBlock({ onWallet, onSubmit }: Props) {
             />
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.form
-        initial="hidden"
-        whileInView="visible"
-        viewport={cardsViewport}
-        variants={textSnap}
+      <form
         onSubmit={handleSubmit}
         className="grid gap-4 rounded-2xl border border-white/[0.08] bg-[var(--surface)] p-6 sm:grid-cols-[1fr_1fr_auto]"
       >
@@ -106,7 +94,7 @@ export function LaunchBlock({ onWallet, onSubmit }: Props) {
             <ArrowUpRight size={14} strokeWidth={1.5} className="arrow-icon" />
           </MagneticButton>
         </div>
-      </motion.form>
+      </form>
     </div>
   )
 }
