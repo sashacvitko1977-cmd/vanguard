@@ -1,9 +1,14 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "",
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "rewrites": [
-    { "source": "/vanguard.html", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "vanguard.html", "use": "@vercel/static" },
+    { "src": "assets/**", "use": "@vercel/static" },
+    { "src": "public/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/vanguard.html", "dest": "/index.html" },
+    { "src": "/.*", "dest": "/index.html" }
   ]
 }
