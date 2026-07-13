@@ -12,68 +12,41 @@ export const springBrutal = { type: 'spring' as const, stiffness: 960, damping: 
 const brutal = { duration: 0.18, ease: SNAP_BRUTAL }
 const hard = { duration: 0.2, ease: SNAP_HARD }
 
-/** Viewport-триггеры для scroll-reveal */
-export const sectionViewport = { once: true, margin: '0px 0px -8% 0px', amount: 0.18 as const }
+/** Триггер: раздел влетает целиком */
+export const sectionViewport = { once: true, margin: '0px 0px -5% 0px', amount: 0.08 as const }
 export const textViewport = { once: true, margin: '0px 0px -6% 0px', amount: 0.25 as const }
 export const cardsViewport = { once: true, margin: '0px 0px -10% 0px', amount: 0.12 as const }
 
-const sectionEnter = { duration: 0.72, ease: SNAP_BRUTAL }
+/** Резкий влет всего раздела — без stagger, один удар */
+const slam = { duration: 0.36, ease: SNAP_BRUTAL }
+const slamHard = { duration: 0.32, ease: SNAP_HARD }
 
-// ——— Вход раздела с края экрана ———
-
-/** Проекты — влет слева */
 export const sectionFromLeft: Variants = {
-  hidden: { opacity: 0, x: '-100vw', skewX: -4 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    skewX: 0,
-    transition: { ...sectionEnter, staggerChildren: 0.07, delayChildren: 0.12 },
-  },
+  hidden: { x: '-100vw' },
+  visible: { x: 0, transition: slam },
 }
 
-/** Экосистема — влет справа */
 export const sectionFromRight: Variants = {
-  hidden: { opacity: 0, x: '100vw', skewX: 4 },
-  visible: {
-    opacity: 1,
-    x: 0,
-    skewX: 0,
-    transition: { ...sectionEnter, staggerChildren: 0.07, delayChildren: 0.12 },
-  },
+  hidden: { x: '100vw' },
+  visible: { x: 0, transition: slam },
 }
 
-/** Услуги — влет снизу */
 export const sectionFromBottom: Variants = {
-  hidden: { opacity: 0, y: '80vh', scale: 0.88, rotateX: 8 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    rotateX: 0,
-    transition: { ...sectionEnter, duration: 0.68, staggerChildren: 0.06, delayChildren: 0.14 },
-  },
+  hidden: { y: '100%' },
+  visible: { y: 0, transition: { duration: 0.38, ease: SNAP_BRUTAL } },
 }
 
-/** Запуск — появление из ниоткуда */
 export const sectionFromVoid: Variants = {
-  hidden: { opacity: 0, scale: 0.72, y: 80, filter: 'blur(20px)' },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    filter: 'blur(0px)',
-    transition: { duration: 0.75, ease: SNAP_BRUTAL, staggerChildren: 0.08, delayChildren: 0.18 },
-  },
+  hidden: { scale: 0.82, opacity: 0 },
+  visible: { scale: 1, opacity: 1, transition: slamHard },
 }
 
-// Legacy section variants
 export const sectionSlamDown = sectionFromBottom
 export const sectionSlashLeft = sectionFromLeft
 export const sectionPunchIn = sectionFromBottom
 export const sectionIgnite = sectionFromVoid
 
-// ——— Уникальные входы текста ———
+// ——— Текст (footer и пр.) ———
 
 export const eyebrowSlash: Variants = {
   hidden: { opacity: 0, x: -56, scaleX: 0.4, originX: 0, letterSpacing: '0.5em' },
@@ -146,8 +119,6 @@ export const leadFadeStrike: Variants = {
   visible: { opacity: 1, y: 0, scale: 1, transition: springSnapHard },
 }
 
-// ——— Stagger-профили ———
-
 export const staggerTight: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.04, delayChildren: 0 } },
@@ -166,13 +137,6 @@ export const staggerWave: Variants = {
 export const staggerIgnite: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.05, delayChildren: 0.08 } },
-}
-
-// ——— Уникальные входы карточек ———
-
-export const cardFlipSlam: Variants = {
-  hidden: { opacity: 0, y: 72, rotateX: 22, scale: 0.84 },
-  visible: { opacity: 1, y: 0, rotateX: 0, scale: 1, transition: springSnap },
 }
 
 export const cardFromLeft: Variants = {
@@ -195,6 +159,11 @@ export const cardSlamUp: Variants = {
   visible: { opacity: 1, y: 0, scaleY: 1, transition: { ...brutal, duration: 0.42 } },
 }
 
+export const cardFlipSlam: Variants = {
+  hidden: { opacity: 0, y: 72, rotateX: 22, scale: 0.84 },
+  visible: { opacity: 1, y: 0, rotateX: 0, scale: 1, transition: springSnap },
+}
+
 export const cardTiltIn: Variants = {
   hidden: { opacity: 0, y: 56, rotateZ: -6, scale: 0.88 },
   visible: { opacity: 1, y: 0, rotateZ: 0, scale: 1, transition: springSnapHard },
@@ -205,22 +174,21 @@ export const ctaPunch: Variants = {
   visible: { opacity: 1, scale: 1, y: 0, transition: springBrutal },
 }
 
-// Legacy aliases
-export const snapFadeUp = sectionSlamDown
-export const snapSlideLeft = sectionSlashLeft
-export const snapScale = sectionPunchIn
-export const snapClip = sectionIgnite
+export const snapFadeUp = sectionFromBottom
+export const snapSlideLeft = sectionFromLeft
+export const snapScale = sectionFromVoid
+export const snapClip = sectionFromVoid
 export const snapStagger = staggerTight
 export const textStagger = staggerTight
 export const cardGridStagger = staggerWave
 export const cardSnapIn = cardFlipSlam
 export const textSnap = titleClipUp
 export const eyebrowSnap = eyebrowSlash
-export const fadeUp = sectionSlamDown
+export const fadeUp = sectionFromBottom
 export const staggerContainer = staggerTight
-export const slideFromLeft = sectionSlashLeft
-export const scaleRotateIn = sectionPunchIn
-export const clipWipe = sectionIgnite
+export const slideFromLeft = sectionFromLeft
+export const scaleRotateIn = sectionFromVoid
+export const clipWipe = sectionFromVoid
 export const EASE_OUT_EXPO = SNAP
 export const EASE_IN_OUT_SOFT = SNAP_HARD
 
