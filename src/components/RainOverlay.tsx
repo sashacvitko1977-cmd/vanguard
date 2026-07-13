@@ -66,7 +66,7 @@ type ScreenSplash = {
   beads: SlideBead[]
 }
 
-const WIND = 1.35
+const WIND_DRIFT = 0.12
 
 const createSplashParticles = (x: number, y: number, intensity: number, count: number): SplashParticle[] => {
   const particles: SplashParticle[] = []
@@ -120,18 +120,18 @@ export function RainOverlay() {
 
     const createDrop = (randomY = false): Drop => {
       const z = Math.random()
-      const heavy = Math.random() < 0.12
+      const heavy = Math.random() < 0.14
       const depth = 0.35 + z * 0.65
 
       return {
-        x: Math.random() * (w + 80) - 40,
-        y: randomY ? Math.random() * h : -30 - Math.random() * 120,
+        x: Math.random() * w,
+        y: randomY ? -20 - Math.random() * h : -20 - Math.random() * 140,
         z,
-        speed: (heavy ? 22 : 14) + depth * 16 + Math.random() * 6,
-        length: (heavy ? 28 : 14) + depth * 22 + Math.random() * 12,
-        width: heavy ? 1.4 + Math.random() * 0.8 : 0.4 + depth * 0.9,
-        opacity: heavy ? 0.55 + Math.random() * 0.25 : 0.12 + depth * 0.35,
-        wind: WIND + (Math.random() - 0.5) * 0.35,
+        speed: (heavy ? 20 : 12) + depth * 18 + Math.random() * 8,
+        length: (heavy ? 22 : 12) + depth * 26 + Math.random() * 14,
+        width: heavy ? 1.2 + Math.random() * 0.7 : 0.35 + depth * 0.75,
+        opacity: heavy ? 0.5 + Math.random() * 0.3 : 0.14 + depth * 0.38,
+        wind: (Math.random() - 0.5) * WIND_DRIFT,
         heavy,
       }
     }
@@ -240,16 +240,16 @@ export function RainOverlay() {
     }
 
     const spawnDrop = () => {
-      const chance = coarse ? 0.72 : 0.88
+      const chance = coarse ? 0.82 : 0.94
       if (Math.random() > chance) return
 
       const count = coarse
-        ? 1 + Math.floor(Math.random() * 2)
-        : Math.random() < 0.35 ? 3 : Math.random() < 0.65 ? 2 : 1
+        ? 2 + Math.floor(Math.random() * 2)
+        : Math.random() < 0.25 ? 5 : Math.random() < 0.55 ? 4 : 3
       for (let i = 0; i < count; i++) {
         dropsRef.current.push(createDrop())
       }
-      const max = coarse ? 140 : 280
+      const max = coarse ? 200 : 420
       if (dropsRef.current.length > max) {
         dropsRef.current.splice(0, dropsRef.current.length - max)
       }
@@ -280,7 +280,7 @@ export function RainOverlay() {
     }
 
     const drawDrop = (d: Drop, x: number, y: number) => {
-      const tailX = x - d.wind * (d.length * 0.12)
+      const tailX = x - d.wind * 2
       const tailY = y - d.length
 
       const grad = ctx.createLinearGradient(tailX, tailY, x, y)
@@ -442,7 +442,7 @@ export function RainOverlay() {
 
     let lastSpawn = 0
     const draw = (now: number) => {
-      if (now - lastSpawn > (coarse ? 38 : 16)) {
+      if (now - lastSpawn > (coarse ? 28 : 10)) {
         spawnDrop()
         lastSpawn = now
       }
@@ -453,7 +453,7 @@ export function RainOverlay() {
       const nextDrops: Drop[] = []
       for (const d of dropsRef.current) {
         const ny = d.y + d.speed
-        const nx = d.x + d.wind
+        const nx = d.x + d.wind * 0.4
         drawDrop(d, nx, ny)
         if (ny < h + 40) {
           nextDrops.push({ ...d, x: nx, y: ny })
@@ -520,7 +520,7 @@ export function RainOverlay() {
     }
 
     resize()
-    const seedCount = coarse ? 80 : 180
+    const seedCount = coarse ? 120 : 280
     for (let i = 0; i < seedCount; i++) {
       dropsRef.current.push(createDrop(true))
     }
