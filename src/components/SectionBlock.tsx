@@ -1,15 +1,18 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import type { SectionData } from '../lib/data'
 import {
   snapFadeUp,
   snapSlideLeft,
   snapScale,
   snapClip,
-  snapStagger,
+  textStagger,
+  cardGridStagger,
   cardSnapIn,
   textSnap,
   eyebrowSnap,
+  sectionViewport,
+  textViewport,
+  cardsViewport,
 } from '../lib/motion'
 import { FeatureCard } from './FeatureCard'
 import { MagneticButton } from './MagneticButton'
@@ -31,52 +34,58 @@ export function SectionBlock({
   index: number
   onWallet?: () => void
 }) {
-  const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-100px' })
   const isEven = index % 2 === 1
   const SectionVariant = sectionVariants[section.animation]
 
   return (
-    <motion.section
-      ref={ref}
+    <section
       id={section.id}
-      variants={SectionVariant}
-      initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
       className={`scroll-section border-t border-white/8 px-6 py-20 sm:px-10 lg:px-16 ${isEven ? 'bg-[#0a0a0a]' : 'bg-[#050505]'}`}
     >
       <div className="mx-auto max-w-6xl">
+        {/* Раздел — резкое появление при скролле */}
         <motion.div
-          variants={snapStagger}
           initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
+          whileInView="visible"
+          viewport={sectionViewport}
+          variants={SectionVariant}
+          className="origin-top"
         >
-          <motion.p
-            variants={eyebrowSnap}
-            className="mb-2 font-inter text-[10px] uppercase tracking-[0.22em] text-violet-400"
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={textViewport}
+            variants={textStagger}
           >
-            {section.eyebrow}
-          </motion.p>
-          <motion.h2
-            variants={textSnap}
-            className="font-podium text-[clamp(1.5rem,3.5vw,2.25rem)] uppercase neon-glow"
-          >
-            {section.title}
-          </motion.h2>
-          <motion.p
-            variants={textSnap}
-            className="mt-3 max-w-xl text-sm leading-relaxed text-white/60"
-          >
-            {section.lead}
-          </motion.p>
+            <motion.p
+              variants={eyebrowSnap}
+              className="mb-2 font-inter text-[10px] uppercase tracking-[0.22em] text-violet-400"
+            >
+              {section.eyebrow}
+            </motion.p>
+            <motion.h2
+              variants={textSnap}
+              className="font-podium text-[clamp(1.5rem,3.5vw,2.25rem)] uppercase neon-glow"
+            >
+              {section.title}
+            </motion.h2>
+            <motion.p
+              variants={textSnap}
+              className="mt-3 max-w-xl text-sm leading-relaxed text-white/60"
+            >
+              {section.lead}
+            </motion.p>
+          </motion.div>
         </motion.div>
 
+        {/* Карточки — отдельный триггер при скролле к блоку */}
         {section.cards.length > 0 && (
           <motion.div
             className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            variants={snapStagger}
             initial="hidden"
-            animate={inView ? 'visible' : 'hidden'}
+            whileInView="visible"
+            viewport={cardsViewport}
+            variants={cardGridStagger}
             style={{ perspective: 900 }}
           >
             {section.cards.map((card) => (
@@ -87,9 +96,10 @@ export function SectionBlock({
 
         {section.id === 'launch' && (
           <motion.div
-            variants={textSnap}
             initial="hidden"
-            animate={inView ? 'visible' : 'hidden'}
+            whileInView="visible"
+            viewport={cardsViewport}
+            variants={textSnap}
             className="mt-8"
           >
             <MagneticButton
@@ -102,6 +112,6 @@ export function SectionBlock({
           </motion.div>
         )}
       </div>
-    </motion.section>
+    </section>
   )
 }

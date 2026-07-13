@@ -1,20 +1,16 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import { NAV_LINKS } from '../lib/data'
-import { snapFadeUp, snapStagger } from '../lib/motion'
+import { snapFadeUp, snapStagger, textViewport } from '../lib/motion'
 
 export function Footer() {
-  const ref = useRef<HTMLElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-60px' })
-
   return (
     <motion.footer
-      ref={ref}
       id="footer"
       className="border-t border-white/10 bg-black px-6 py-14 sm:px-10 lg:px-16"
-      variants={snapStagger}
       initial="hidden"
-      animate={inView ? 'visible' : 'hidden'}
+      whileInView="visible"
+      viewport={textViewport}
+      variants={snapStagger}
     >
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(3,1fr)]">

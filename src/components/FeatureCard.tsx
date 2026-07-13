@@ -1,6 +1,6 @@
 import { motion, type Variants } from 'framer-motion'
 import type { CardData } from '../lib/data'
-import { cardHover, SNAP } from '../lib/motion'
+import { SNAP } from '../lib/motion'
 import { ArrowUpRight } from 'lucide-react'
 
 const accentMap = {
@@ -58,14 +58,15 @@ export function FeatureCard({ card, variants }: { card: CardData; variants?: Var
   return (
     <motion.article
       variants={variants}
-      initial="rest"
-      whileHover="hover"
-      animate="rest"
       className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] p-5 backdrop-blur-sm transition-colors duration-200 ${a.border}`}
     >
       <div className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${a.glow} opacity-0 blur-2xl transition-opacity duration-300 group-hover:opacity-100`} />
 
-      <motion.div variants={cardHover} className="relative z-10">
+      <motion.div
+        className="relative z-10"
+        whileHover={{ scale: 1.04, y: -8 }}
+        transition={{ duration: 0.22, ease: SNAP }}
+      >
         <div className="mb-4 flex items-start justify-between gap-3">
           <motion.div
             className={`flex h-10 w-10 items-center justify-center rounded-md border ${a.icon}`}
