@@ -221,11 +221,14 @@ export function RainOverlay() {
     }
 
     const spawnDrop = () => {
-      const chance = coarse ? 0.22 : 0.28
+      const chance = coarse ? 0.38 : 0.48
       if (Math.random() > chance) return
 
-      dropsRef.current.push(createDrop())
-      const max = coarse ? 11 : 19
+      const count = coarse ? 1 : Math.random() < 0.35 ? 2 : 1
+      for (let i = 0; i < count; i++) {
+        dropsRef.current.push(createDrop())
+      }
+      const max = coarse ? 20 : 35
       if (dropsRef.current.length > max) {
         dropsRef.current.splice(0, dropsRef.current.length - max)
       }
@@ -402,7 +405,7 @@ export function RainOverlay() {
     let lastSpawn = 0
     let lastImpactSpawn = 0
     const draw = (now: number) => {
-      if (now - lastSpawn > (coarse ? 220 : 152)) {
+      if (now - lastSpawn > (coarse ? 130 : 85)) {
         spawnDrop()
         lastSpawn = now
       }
@@ -484,7 +487,7 @@ export function RainOverlay() {
     }
 
     resize()
-    const bgSeed = coarse ? 6 : 10
+    const bgSeed = coarse ? 12 : 22
     const impactSeed = coarse ? 18 : 38
     for (let i = 0; i < bgSeed; i++) {
       dropsRef.current.push(createDrop(true))
