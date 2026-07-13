@@ -3,11 +3,13 @@ export function GlobalVideoBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
       <video
-        className="absolute left-1/2 top-1/2 h-full w-full object-cover"
+        className="absolute left-1/2 top-1/2 max-w-none object-cover"
         style={{
           filter: 'brightness(0.68)',
-          transform: 'translate(-50%, -50%) scale(0.78)',
-          objectPosition: '50% 38%',
+          objectPosition: '50% 40%',
+          width: '122%',
+          height: '122%',
+          transform: 'translate(-50%, -50%)',
         }}
         src="/fonono.mp4"
         autoPlay
