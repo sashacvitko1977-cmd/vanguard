@@ -41,7 +41,11 @@ export function Hero() {
               return (
                 <span
                   key={line}
-                  className={`neon-glow block text-[clamp(2rem,6vw,4.5rem)] ${lineIdx === 1 ? 'text-white/90' : ''} ${lineIdx === 2 ? 'text-violet-200/90' : ''}`}
+                  className={`block text-[clamp(2rem,6vw,4.5rem)] ${
+                    lineIdx === 2
+                      ? 'blood-glow text-[#c41e3a]'
+                      : `neon-glow ${lineIdx === 1 ? 'text-white/90' : 'text-white'}`
+                  }`}
                 >
                   <CharReveal text={line} delay={delay} stagger={0.038} />
                 </span>
