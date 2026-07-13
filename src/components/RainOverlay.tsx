@@ -30,6 +30,25 @@ type ImpactDrop = {
   speed: number
   size: number
   opacity: number
+  heavy: boolean
+}
+
+type SplashParticle = {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  size: number
+  life: number
+  opacity: number
+}
+
+type SlideBead = {
+  y: number
+  driftX: number
+  opacity: number
+  life: number
+  width: number
 }
 
 type ScreenSplash = {
@@ -37,13 +56,35 @@ type ScreenSplash = {
   y: number
   life: number
   maxLife: number
+  intensity: number
   radius: number
-  ring: number
-  rays: { angle: number; length: number }[]
-  bead: { y: number; driftX: number; opacity: number; life: number } | null
+  flash: number
+  rings: { radius: number; opacity: number; width: number }[]
+  rays: { angle: number; length: number; width: number }[]
+  smears: { angle: number; length: number; opacity: number }[]
+  particles: SplashParticle[]
+  beads: SlideBead[]
 }
 
 const WIND = 1.35
+
+const createSplashParticles = (x: number, y: number, intensity: number, count: number): SplashParticle[] => {
+  const particles: SplashParticle[] = []
+  for (let i = 0; i < count; i++) {
+    const angle = Math.random() * Math.PI * 2
+    const force = (2 + Math.random() * 7) * intensity
+    particles.push({
+      x,
+      y,
+      vx: Math.cos(angle) * force,
+      vy: Math.sin(angle) * force - 1.5 - Math.random() * 3,
+      size: 0.6 + Math.random() * 2.2 * intensity,
+      life: 0.7 + Math.random() * 0.5,
+      opacity: 0.4 + Math.random() * 0.5,
+    })
+  }
+  return particles
+}
 
 /** Реалистичный дождь + удары о «стекло» экрана */
 export function RainOverlay() {
@@ -95,22 +136,22 @@ export function RainOverlay() {
       }
     }
 
-    const createImpactDrop = (): ImpactDrop => {
-      const targetX = w * (0.12 + Math.random() * 0.76)
-      const targetY = h * (0.1 + Math.random() * 0.75)
+    const createImpactDrop = (heavy = Math.random() < 0.28): ImpactDrop => {
+      const targetX = w * (0.08 + Math.random() * 0.84)
+      const targetY = h * (0.06 + Math.random() * 0.82)
       const edge = Math.floor(Math.random() * 3)
 
       let startX = targetX
       let startY = targetY
       if (edge === 0) {
-        startX = targetX + (Math.random() - 0.5) * w * 0.35
-        startY = -40 - Math.random() * 80
+        startX = targetX + (Math.random() - 0.5) * w * 0.45
+        startY = -50 - Math.random() * 120
       } else if (edge === 1) {
-        startX = w + 30 + Math.random() * 60
-        startY = targetY - h * (0.08 + Math.random() * 0.2)
+        startX = w + 40 + Math.random() * 90
+        startY = targetY - h * (0.1 + Math.random() * 0.28)
       } else {
-        startX = -30 - Math.random() * 60
-        startY = targetY - h * (0.08 + Math.random() * 0.2)
+        startX = -40 - Math.random() * 90
+        startY = targetY - h * (0.1 + Math.random() * 0.28)
       }
 
       return {
@@ -119,17 +160,35 @@ export function RainOverlay() {
         targetX,
         targetY,
         progress: 0,
-        speed: 0.018 + Math.random() * 0.022,
-        size: 1.2 + Math.random() * 1.8,
-        opacity: 0.45 + Math.random() * 0.35,
+        speed: heavy ? 0.032 + Math.random() * 0.028 : 0.022 + Math.random() * 0.026,
+        size: heavy ? 2.4 + Math.random() * 2.8 : 1.4 + Math.random() * 2.2,
+        opacity: heavy ? 0.65 + Math.random() * 0.3 : 0.45 + Math.random() * 0.35,
+        heavy,
       }
     }
 
-    const spawnScreenSplash = (x: number, y: number) => {
-      const rayCount = 7 + Math.floor(Math.random() * 6)
+    const spawnScreenSplash = (x: number, y: number, heavy: boolean) => {
+      const intensity = heavy ? 1.2 + Math.random() * 0.5 : 0.75 + Math.random() * 0.45
+      const rayCount = heavy ? 14 + Math.floor(Math.random() * 8) : 9 + Math.floor(Math.random() * 6)
+
       const rays = Array.from({ length: rayCount }, (_, i) => ({
-        angle: (Math.PI * 2 * i) / rayCount + (Math.random() - 0.5) * 0.35,
-        length: 6 + Math.random() * 14,
+        angle: (Math.PI * 2 * i) / rayCount + (Math.random() - 0.5) * 0.5,
+        length: (heavy ? 14 : 8) + Math.random() * (heavy ? 22 : 14),
+        width: 0.6 + Math.random() * (heavy ? 1.8 : 1.1),
+      }))
+
+      const smears = Array.from({ length: heavy ? 5 : 3 }, () => ({
+        angle: Math.random() * Math.PI * 2,
+        length: 10 + Math.random() * (heavy ? 28 : 16),
+        opacity: 0.25 + Math.random() * 0.35,
+      }))
+
+      const beads: SlideBead[] = Array.from({ length: heavy ? 3 : 1 + Math.floor(Math.random() * 2) }, () => ({
+        y: 0,
+        driftX: (Math.random() - 0.5) * (heavy ? 8 : 5),
+        opacity: 0.5 + Math.random() * 0.35,
+        life: 1,
+        width: 1 + Math.random() * (heavy ? 2.2 : 1.4),
       }))
 
       splashesRef.current.push({
@@ -137,22 +196,46 @@ export function RainOverlay() {
         y,
         life: 1,
         maxLife: 1,
-        radius: 2 + Math.random() * 2,
-        ring: 0,
+        intensity,
+        radius: heavy ? 3 + Math.random() * 4 : 2 + Math.random() * 2.5,
+        flash: 1,
+        rings: [
+          { radius: 0, opacity: 0.7, width: heavy ? 2 : 1.2 },
+          { radius: 0, opacity: 0.45, width: 1 },
+          { radius: 0, opacity: 0.25, width: 0.6 },
+        ],
         rays,
-        bead:
-          Math.random() > 0.35
-            ? {
-                y: 0,
-                driftX: (Math.random() - 0.5) * 3,
-                opacity: 0.55 + Math.random() * 0.25,
-                life: 1,
-              }
-            : null,
+        smears,
+        particles: createSplashParticles(x, y, intensity, heavy ? 28 + Math.floor(Math.random() * 16) : 14 + Math.floor(Math.random() * 10)),
+        beads,
       })
 
-      if (splashesRef.current.length > (coarse ? 12 : 24)) {
-        splashesRef.current.shift()
+      if (heavy && Math.random() > 0.4) {
+        const ox = x + (Math.random() - 0.5) * 40
+        const oy = y + (Math.random() - 0.5) * 30
+        splashesRef.current.push({
+          x: ox,
+          y: oy,
+          life: 0.85,
+          maxLife: 0.85,
+          intensity: 0.5 + Math.random() * 0.3,
+          radius: 1.5 + Math.random() * 2,
+          flash: 0.6,
+          rings: [{ radius: 0, opacity: 0.4, width: 0.8 }],
+          rays: Array.from({ length: 6 }, (_, i) => ({
+            angle: (Math.PI * 2 * i) / 6 + Math.random() * 0.4,
+            length: 5 + Math.random() * 8,
+            width: 0.5 + Math.random() * 0.6,
+          })),
+          smears: [],
+          particles: createSplashParticles(ox, oy, 0.5, 6 + Math.floor(Math.random() * 6)),
+          beads: [],
+        })
+      }
+
+      const maxSplashes = coarse ? 18 : 36
+      if (splashesRef.current.length > maxSplashes) {
+        splashesRef.current.splice(0, splashesRef.current.length - maxSplashes)
       }
     }
 
@@ -171,10 +254,15 @@ export function RainOverlay() {
     }
 
     const spawnImpactDrop = () => {
-      const interval = coarse ? 0.004 : 0.007
+      const interval = coarse ? 0.012 : 0.022
       if (Math.random() > interval) return
-      if (impactsRef.current.length >= (coarse ? 3 : 6)) return
+      const maxImpacts = coarse ? 5 : 10
+      if (impactsRef.current.length >= maxImpacts) return
+
       impactsRef.current.push(createImpactDrop())
+      if (!coarse && Math.random() < 0.18) {
+        impactsRef.current.push(createImpactDrop(Math.random() < 0.4))
+      }
     }
 
     const spawnRipple = (x: number, y: number, heavy: boolean) => {
@@ -216,95 +304,136 @@ export function RainOverlay() {
     }
 
     const drawImpactDrop = (drop: ImpactDrop) => {
-      const t = drop.progress * drop.progress
+      const t = Math.pow(drop.progress, drop.heavy ? 1.6 : 1.9)
       const x = drop.startX + (drop.targetX - drop.startX) * t
       const y = drop.startY + (drop.targetY - drop.startY) * t
-      const size = drop.size * (0.4 + t * 2.2)
-      const alpha = drop.opacity * (0.35 + t * 0.65)
+      const size = drop.size * (0.35 + t * (drop.heavy ? 3.2 : 2.4))
+      const alpha = drop.opacity * (0.3 + t * 0.7)
 
-      const trailT = Math.max(0, t - 0.12)
+      const trailT = Math.max(0, t - (drop.heavy ? 0.18 : 0.12))
       const tx = drop.startX + (drop.targetX - drop.startX) * trailT
       const ty = drop.startY + (drop.targetY - drop.startY) * trailT
 
       const streak = ctx.createLinearGradient(tx, ty, x, y)
       streak.addColorStop(0, `rgba(200, 220, 245, 0)`)
-      streak.addColorStop(0.6, `rgba(220, 235, 250, ${alpha * 0.35})`)
+      streak.addColorStop(0.5, `rgba(220, 235, 250, ${alpha * 0.3})`)
       streak.addColorStop(1, `rgba(245, 250, 255, ${alpha})`)
 
       ctx.beginPath()
       ctx.strokeStyle = streak
-      ctx.lineWidth = size * 0.45
+      ctx.lineWidth = size * (drop.heavy ? 0.55 : 0.45)
       ctx.lineCap = 'round'
       ctx.moveTo(tx, ty)
       ctx.lineTo(x, y)
       ctx.stroke()
 
-      const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 1.8)
-      glow.addColorStop(0, `rgba(245, 250, 255, ${alpha * 0.9})`)
-      glow.addColorStop(0.45, `rgba(220, 235, 250, ${alpha * 0.35})`)
+      const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 2.4)
+      glow.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.95})`)
+      glow.addColorStop(0.3, `rgba(235, 245, 255, ${alpha * 0.55})`)
       glow.addColorStop(1, `rgba(200, 220, 245, 0)`)
 
       ctx.beginPath()
       ctx.fillStyle = glow
-      ctx.arc(x, y, size * 1.8, 0, Math.PI * 2)
+      ctx.arc(x, y, size * 2.4, 0, Math.PI * 2)
       ctx.fill()
 
       ctx.beginPath()
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.85})`
-      ctx.arc(x, y, size * 0.55, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`
+      ctx.arc(x, y, size * 0.5, 0, Math.PI * 2)
       ctx.fill()
     }
 
     const drawScreenSplash = (s: ScreenSplash) => {
       const fade = s.life / s.maxLife
-      const alpha = fade * fade
+      const alpha = fade * fade * s.intensity
+
+      if (s.flash > 0.05) {
+        const flashGrad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 18 + s.intensity * 14)
+        flashGrad.addColorStop(0, `rgba(255, 255, 255, ${s.flash * 0.55})`)
+        flashGrad.addColorStop(0.35, `rgba(220, 235, 255, ${s.flash * 0.2})`)
+        flashGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+        ctx.beginPath()
+        ctx.fillStyle = flashGrad
+        ctx.arc(s.x, s.y, 18 + s.intensity * 14, 0, Math.PI * 2)
+        ctx.fill()
+      }
 
       ctx.beginPath()
-      ctx.fillStyle = `rgba(240, 248, 255, ${alpha * 0.55})`
-      ctx.arc(s.x, s.y, s.radius * 0.7, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(245, 250, 255, ${alpha * 0.65})`
+      ctx.arc(s.x, s.y, s.radius * (0.6 + (1 - fade) * 0.5), 0, Math.PI * 2)
       ctx.fill()
 
-      for (const ray of s.rays) {
-        const len = ray.length * (0.6 + (1 - fade) * 0.8)
-        const ex = s.x + Math.cos(ray.angle) * len
-        const ey = s.y + Math.sin(ray.angle) * len
-
-        const rayGrad = ctx.createLinearGradient(s.x, s.y, ex, ey)
-        rayGrad.addColorStop(0, `rgba(235, 245, 255, ${alpha * 0.75})`)
-        rayGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
-
+      for (const smear of s.smears) {
+        const len = smear.length * (0.5 + (1 - fade) * 0.7)
+        const ex = s.x + Math.cos(smear.angle) * len
+        const ey = s.y + Math.sin(smear.angle) * len
+        const smearGrad = ctx.createLinearGradient(s.x, s.y, ex, ey)
+        smearGrad.addColorStop(0, `rgba(230, 242, 255, ${smear.opacity * alpha * 0.8})`)
+        smearGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
         ctx.beginPath()
-        ctx.strokeStyle = rayGrad
-        ctx.lineWidth = 0.8 + fade * 0.6
+        ctx.strokeStyle = smearGrad
+        ctx.lineWidth = 1.5 + fade
         ctx.lineCap = 'round'
         ctx.moveTo(s.x, s.y)
         ctx.lineTo(ex, ey)
         ctx.stroke()
       }
 
-      ctx.beginPath()
-      ctx.strokeStyle = `rgba(210, 230, 250, ${alpha * 0.5})`
-      ctx.lineWidth = 1
-      ctx.ellipse(s.x, s.y, s.ring, s.ring * 0.35, 0, 0, Math.PI * 2)
-      ctx.stroke()
+      for (const ray of s.rays) {
+        const len = ray.length * (0.5 + (1 - fade) * 1.1)
+        const ex = s.x + Math.cos(ray.angle) * len
+        const ey = s.y + Math.sin(ray.angle) * len
 
-      if (s.bead) {
-        const beadAlpha = s.bead.opacity * s.bead.life * alpha
-        const slideGrad = ctx.createLinearGradient(s.x, s.y, s.x, s.y + s.bead.y)
-        slideGrad.addColorStop(0, `rgba(220, 235, 250, ${beadAlpha * 0.7})`)
+        const rayGrad = ctx.createLinearGradient(s.x, s.y, ex, ey)
+        rayGrad.addColorStop(0, `rgba(245, 250, 255, ${alpha * 0.9})`)
+        rayGrad.addColorStop(0.4, `rgba(230, 242, 255, ${alpha * 0.5})`)
+        rayGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+
+        ctx.beginPath()
+        ctx.strokeStyle = rayGrad
+        ctx.lineWidth = ray.width
+        ctx.lineCap = 'round'
+        ctx.moveTo(s.x, s.y)
+        ctx.lineTo(ex, ey)
+        ctx.stroke()
+      }
+
+      for (const ring of s.rings) {
+        if (ring.opacity < 0.03) continue
+        ctx.beginPath()
+        ctx.strokeStyle = `rgba(210, 230, 250, ${ring.opacity * alpha})`
+        ctx.lineWidth = ring.width
+        ctx.ellipse(s.x, s.y, ring.radius, ring.radius * 0.32, 0, 0, Math.PI * 2)
+        ctx.stroke()
+      }
+
+      for (const p of s.particles) {
+        if (p.life <= 0) continue
+        const pAlpha = p.opacity * p.life * alpha
+        ctx.beginPath()
+        ctx.fillStyle = `rgba(235, 245, 255, ${pAlpha})`
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2)
+        ctx.fill()
+      }
+
+      for (const bead of s.beads) {
+        const beadAlpha = bead.opacity * bead.life * alpha
+        const slideGrad = ctx.createLinearGradient(s.x, s.y, s.x + bead.driftX, s.y + bead.y)
+        slideGrad.addColorStop(0, `rgba(225, 238, 252, ${beadAlpha * 0.85})`)
+        slideGrad.addColorStop(0.6, `rgba(210, 228, 248, ${beadAlpha * 0.45})`)
         slideGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
 
         ctx.beginPath()
         ctx.strokeStyle = slideGrad
-        ctx.lineWidth = 1.2
+        ctx.lineWidth = bead.width
         ctx.lineCap = 'round'
         ctx.moveTo(s.x, s.y)
-        ctx.lineTo(s.x + s.bead.driftX, s.y + s.bead.y)
+        ctx.lineTo(s.x + bead.driftX, s.y + bead.y)
         ctx.stroke()
 
         ctx.beginPath()
-        ctx.fillStyle = `rgba(235, 245, 255, ${beadAlpha * 0.6})`
-        ctx.ellipse(s.x + s.bead.driftX * 0.4, s.y + s.bead.y, 1.8, 2.4, 0, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(240, 248, 255, ${beadAlpha * 0.7})`
+        ctx.ellipse(s.x + bead.driftX * 0.5, s.y + bead.y, bead.width * 1.2, bead.width * 1.6, 0, 0, Math.PI * 2)
         ctx.fill()
       }
     }
@@ -323,9 +452,7 @@ export function RainOverlay() {
       for (const d of dropsRef.current) {
         const ny = d.y + d.speed
         const nx = d.x + d.wind
-
         drawDrop(d, nx, ny)
-
         if (ny < h + 40) {
           nextDrops.push({ ...d, x: nx, y: ny })
         } else {
@@ -341,7 +468,7 @@ export function RainOverlay() {
           nextImpacts.push({ ...drop, progress })
           drawImpactDrop({ ...drop, progress })
         } else {
-          spawnScreenSplash(drop.targetX, drop.targetY)
+          spawnScreenSplash(drop.targetX, drop.targetY, drop.heavy)
         }
       }
       impactsRef.current = nextImpacts
@@ -357,27 +484,32 @@ export function RainOverlay() {
         ctx.lineWidth = r.heavy ? 1.1 : 0.6
         ctx.ellipse(r.x, r.y, r.radius, r.radius * 0.28, 0, 0, Math.PI * 2)
         ctx.stroke()
-
-        if (r.heavy && r.life > 0.5) {
-          ctx.beginPath()
-          ctx.strokeStyle = `rgba(200, 220, 245, ${r.opacity * 0.45})`
-          ctx.lineWidth = 0.5
-          ctx.ellipse(r.x, r.y, r.radius * 0.55, r.radius * 0.16, 0, 0, Math.PI * 2)
-          ctx.stroke()
-        }
-
         return true
       })
 
       splashesRef.current = splashesRef.current.filter((s) => {
-        s.life -= 0.035
-        s.ring += 1.8 + (1 - s.life) * 2.2
-        if (s.bead) {
-          s.bead.y += 1.6 + (1 - s.bead.life) * 1.2
-          s.bead.life -= 0.028
-        }
-        if (s.life <= 0) return false
+        s.life -= s.intensity > 1 ? 0.028 : 0.038
+        s.flash *= 0.82
 
+        for (const ring of s.rings) {
+          ring.radius += 2.4 + s.intensity * 1.8
+          ring.opacity *= 0.9
+        }
+
+        for (const p of s.particles) {
+          p.x += p.vx
+          p.y += p.vy
+          p.vy += 0.22
+          p.vx *= 0.97
+          p.life -= 0.04
+        }
+
+        for (const bead of s.beads) {
+          bead.y += 2.2 + (1 - bead.life) * 2.5
+          bead.life -= 0.022
+        }
+
+        if (s.life <= 0) return false
         drawScreenSplash(s)
         return true
       })
