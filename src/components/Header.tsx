@@ -1,7 +1,8 @@
-import { useState, type ReactNode } from 'react'
+import { useState } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { NAV_LINKS } from '../lib/data'
+import { MagneticButton } from './MagneticButton'
 
 type Props = {
   onWallet: () => void
@@ -26,7 +27,8 @@ export function Header({ onWallet, onMenuOpen }: Props) {
       <div className="mx-auto flex max-w-7xl items-center justify-between">
         <motion.a
           href="#top"
-          className="font-podium text-xl font-bold uppercase tracking-wider text-white neon-glow sm:text-2xl"
+          data-cursor-hover
+          className="font-display text-xl font-bold uppercase tracking-wider text-white neon-glow sm:text-2xl"
           whileHover={{ scale: 1.02 }}
         >
           VANGUARD
@@ -37,6 +39,7 @@ export function Header({ onWallet, onMenuOpen }: Props) {
             <motion.a
               key={link.id}
               href={`#${link.id}`}
+              data-cursor-hover
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 + i * 0.06 }}
@@ -49,13 +52,17 @@ export function Header({ onWallet, onMenuOpen }: Props) {
         </nav>
 
         <div className="flex items-center gap-4">
-          <MagneticBtn onClick={onWallet} className="btn-arrow group hidden items-center gap-2 border border-white/35 px-5 py-2.5 font-inter text-[10px] font-semibold uppercase tracking-widest text-white neon-border transition-all hover:border-white hover:bg-white hover:text-black md:inline-flex">
+          <MagneticButton
+            onClick={onWallet}
+            className="btn-arrow group hidden items-center gap-2 border border-white/35 px-5 py-2.5 font-inter text-[10px] font-semibold uppercase tracking-widest text-white neon-border transition-all hover:border-white hover:bg-white hover:text-black md:inline-flex"
+          >
             Подключить кошелёк
-            <ArrowUpRight size={14} className="arrow-icon" />
-          </MagneticBtn>
+            <ArrowUpRight size={14} strokeWidth={1.5} className="arrow-icon" />
+          </MagneticButton>
 
           <motion.button
             type="button"
+            data-cursor-hover
             className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
             aria-label="Открыть меню"
             whileTap={{ scale: 0.9 }}
@@ -73,21 +80,5 @@ export function Header({ onWallet, onMenuOpen }: Props) {
         </div>
       </div>
     </motion.header>
-  )
-}
-
-function MagneticBtn({
-  children,
-  className,
-  onClick,
-}: {
-  children: ReactNode
-  className?: string
-  onClick?: () => void
-}) {
-  return (
-    <motion.button type="button" className={className} onClick={onClick} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-      {children}
-    </motion.button>
   )
 }

@@ -8,6 +8,7 @@ import { WalletModal } from './components/WalletModal'
 import { Toast } from './components/Toast'
 import { ScrollProgress } from './components/ScrollProgress'
 import { BackToTop } from './components/BackToTop'
+import { CustomCursor } from './components/CustomCursor'
 import { SECTIONS } from './lib/data'
 
 export default function App() {
@@ -38,6 +39,8 @@ export default function App() {
 
   return (
     <>
+      <div className="grain-overlay" aria-hidden="true" />
+      <CustomCursor />
       <ScrollProgress />
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
       <main>
@@ -48,6 +51,11 @@ export default function App() {
             section={section}
             index={i}
             onWallet={section.id === 'launch' ? () => setWalletOpen(true) : undefined}
+            onLeadSubmit={
+              section.id === 'launch'
+                ? (data) => showToast(`Заявка от ${data.name} принята — свяжемся в Telegram`)
+                : undefined
+            }
           />
         ))}
       </main>

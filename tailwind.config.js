@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        podium: ['"FSP DEMO - PODIUM Sharp 4.11"', 'sans-serif'],
+        display: ['Syne', 'sans-serif'],
+        podium: ['Syne', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
       },
       letterSpacing: {

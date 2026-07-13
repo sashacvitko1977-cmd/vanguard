@@ -36,6 +36,25 @@ export const STATS = [
   { value: 18, suffix: '+', label: 'Блокчейн-сетей' },
 ] as const
 
+export const PARTNERS = [
+  'Ethereum',
+  'Solana',
+  'Base',
+  'Arbitrum',
+  'Polygon',
+  'Uniswap',
+  'Aave',
+  'Chainlink',
+  'OpenSea',
+  'Ledger',
+] as const
+
+export type CardMockup = {
+  gradient: string
+  pattern?: string
+  label?: string
+}
+
 export type CardData = {
   title: string
   text: string
@@ -43,6 +62,8 @@ export type CardData = {
   metric?: string
   icon: LucideIcon
   accent: 'violet' | 'cyan' | 'amber' | 'rose' | 'emerald'
+  mockup?: CardMockup
+  layoutClass?: string
 }
 
 export type SectionData = {
@@ -69,6 +90,12 @@ export const SECTIONS: SectionData[] = [
         metric: '$120M TVL',
         icon: Layers,
         accent: 'violet',
+        layoutClass: 'lg:col-span-7 lg:row-span-2',
+        mockup: {
+          gradient: 'from-violet-600/50 via-indigo-900/40 to-[#0a0612]',
+          pattern: 'bg-[radial-gradient(circle_at_30%_20%,rgba(167,139,250,0.35),transparent_50%)]',
+          label: 'Swap · Pool · Chart',
+        },
       },
       {
         title: 'ChainVault',
@@ -77,6 +104,12 @@ export const SECTIONS: SectionData[] = [
         metric: '12K+ users',
         icon: Shield,
         accent: 'cyan',
+        layoutClass: 'lg:col-span-5',
+        mockup: {
+          gradient: 'from-cyan-500/40 via-slate-900/50 to-[#050a10]',
+          pattern: 'bg-[linear-gradient(135deg,rgba(34,211,238,0.15)_0%,transparent_60%)]',
+          label: 'Vault · Multisig',
+        },
       },
       {
         title: 'MetaForge',
@@ -85,6 +118,12 @@ export const SECTIONS: SectionData[] = [
         metric: '2.4M vol',
         icon: Box,
         accent: 'amber',
+        layoutClass: 'lg:col-span-5',
+        mockup: {
+          gradient: 'from-amber-500/45 via-orange-950/40 to-[#100a05]',
+          pattern: 'bg-[radial-gradient(ellipse_at_70%_60%,rgba(251,191,36,0.25),transparent_55%)]',
+          label: '3D Gallery · Mint',
+        },
       },
       {
         title: 'PulseBridge',
@@ -93,6 +132,11 @@ export const SECTIONS: SectionData[] = [
         metric: '18 сетей',
         icon: ArrowLeftRight,
         accent: 'emerald',
+        layoutClass: 'lg:col-span-4',
+        mockup: {
+          gradient: 'from-emerald-500/35 via-teal-950/40 to-black',
+          label: 'Route · Bridge',
+        },
       },
       {
         title: 'ZenithPay',
@@ -101,6 +145,11 @@ export const SECTIONS: SectionData[] = [
         metric: '2M+ tx',
         icon: CreditCard,
         accent: 'rose',
+        layoutClass: 'lg:col-span-4',
+        mockup: {
+          gradient: 'from-rose-500/35 via-pink-950/40 to-black',
+          label: 'Pay · Widget',
+        },
       },
       {
         title: 'OrbitDAO',
@@ -109,6 +158,11 @@ export const SECTIONS: SectionData[] = [
         metric: '340K voters',
         icon: BarChart3,
         accent: 'violet',
+        layoutClass: 'lg:col-span-4',
+        mockup: {
+          gradient: 'from-violet-500/30 via-purple-950/45 to-black',
+          label: 'Vote · Delegate',
+        },
       },
     ],
   },

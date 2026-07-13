@@ -6,10 +6,17 @@ type Props = {
   className?: string
   onClick?: () => void
   href?: string
+  strength?: number
 }
 
-/** Magnetic hover-эффект для кнопок */
-export function MagneticButton({ children, className = '', onClick, href }: Props) {
+/** Магнитная кнопка — притягивается к курсору на 4–8px */
+export function MagneticButton({
+  children,
+  className = '',
+  onClick,
+  href,
+  strength = 0.28,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null)
 
   const handleMove = (e: MouseEvent) => {
@@ -18,7 +25,10 @@ export function MagneticButton({ children, className = '', onClick, href }: Prop
     const rect = el.getBoundingClientRect()
     const x = e.clientX - rect.left - rect.width / 2
     const y = e.clientY - rect.top - rect.height / 2
-    el.style.transform = `translate(${x * 0.18}px, ${y * 0.18}px)`
+    const max = 8
+    const tx = Math.max(-max, Math.min(max, x * strength))
+    const ty = Math.max(-max, Math.min(max, y * strength))
+    el.style.transform = `translate(${tx}px, ${ty}px)`
   }
 
   const handleLeave = () => {
@@ -28,6 +38,7 @@ export function MagneticButton({ children, className = '', onClick, href }: Prop
   const inner = (
     <motion.div
       ref={ref}
+      data-cursor-hover
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       whileTap={{ scale: 0.97 }}
@@ -41,7 +52,7 @@ export function MagneticButton({ children, className = '', onClick, href }: Prop
 
   if (href) {
     return (
-      <a href={href} className="inline-block">
+      <a href={href} className="inline-block" data-cursor-hover>
         {inner}
       </a>
     )
