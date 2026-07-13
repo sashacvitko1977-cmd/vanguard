@@ -1,59 +1,58 @@
 import { useRef, type MouseEvent } from 'react'
 import { motion, type Variants } from 'framer-motion'
 import type { CardData } from '../lib/data'
-import { SNAP } from '../lib/motion'
 import { ArrowUpRight } from 'lucide-react'
 
 const accentMap = {
   violet: {
-    border: 'group-hover:border-violet-500/50',
-    glow: 'from-violet-600/20 via-violet-500/5 to-transparent',
-    icon: 'text-violet-400 bg-violet-500/10 border-violet-500/25',
-    tag: 'text-violet-300 bg-violet-500/15 border-violet-500/30',
-    metric: 'text-violet-200',
-    line: 'from-violet-500 to-fuchsia-500',
+    ring: 'group-hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]',
+    icon: 'text-violet-300 bg-violet-500/12 border-violet-400/20',
+    tag: 'text-violet-200/90 bg-violet-500/12 border-violet-400/25',
+    metric: 'text-violet-300',
+    line: 'from-violet-400 to-fuchsia-400',
     arrow: 'text-violet-400',
-    cursor: 'rgba(139, 92, 246, 0.18)',
+    cursor: 'rgba(139, 92, 246, 0.22)',
+    mockupAccent: 'bg-violet-500/30',
   },
   cyan: {
-    border: 'group-hover:border-cyan-500/50',
-    glow: 'from-cyan-600/20 via-cyan-500/5 to-transparent',
-    icon: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/25',
-    tag: 'text-cyan-300 bg-cyan-500/15 border-cyan-500/30',
-    metric: 'text-cyan-200',
-    line: 'from-cyan-500 to-blue-500',
+    ring: 'group-hover:shadow-[0_0_40px_rgba(34,211,238,0.12)]',
+    icon: 'text-cyan-300 bg-cyan-500/12 border-cyan-400/20',
+    tag: 'text-cyan-200/90 bg-cyan-500/12 border-cyan-400/25',
+    metric: 'text-cyan-300',
+    line: 'from-cyan-400 to-blue-400',
     arrow: 'text-cyan-400',
-    cursor: 'rgba(34, 211, 238, 0.18)',
+    cursor: 'rgba(34, 211, 238, 0.2)',
+    mockupAccent: 'bg-cyan-400/30',
   },
   amber: {
-    border: 'group-hover:border-amber-500/50',
-    glow: 'from-amber-600/20 via-amber-500/5 to-transparent',
-    icon: 'text-amber-400 bg-amber-500/10 border-amber-500/25',
-    tag: 'text-amber-300 bg-amber-500/15 border-amber-500/30',
-    metric: 'text-amber-200',
-    line: 'from-amber-500 to-orange-500',
+    ring: 'group-hover:shadow-[0_0_40px_rgba(251,191,36,0.12)]',
+    icon: 'text-amber-300 bg-amber-500/12 border-amber-400/20',
+    tag: 'text-amber-200/90 bg-amber-500/12 border-amber-400/25',
+    metric: 'text-amber-300',
+    line: 'from-amber-400 to-orange-400',
     arrow: 'text-amber-400',
-    cursor: 'rgba(251, 191, 36, 0.18)',
+    cursor: 'rgba(251, 191, 36, 0.2)',
+    mockupAccent: 'bg-amber-400/30',
   },
   rose: {
-    border: 'group-hover:border-rose-500/50',
-    glow: 'from-rose-600/20 via-rose-500/5 to-transparent',
-    icon: 'text-rose-400 bg-rose-500/10 border-rose-500/25',
-    tag: 'text-rose-300 bg-rose-500/15 border-rose-500/30',
-    metric: 'text-rose-200',
-    line: 'from-rose-500 to-pink-500',
+    ring: 'group-hover:shadow-[0_0_40px_rgba(244,63,94,0.12)]',
+    icon: 'text-rose-300 bg-rose-500/12 border-rose-400/20',
+    tag: 'text-rose-200/90 bg-rose-500/12 border-rose-400/25',
+    metric: 'text-rose-300',
+    line: 'from-rose-400 to-pink-400',
     arrow: 'text-rose-400',
-    cursor: 'rgba(244, 63, 94, 0.18)',
+    cursor: 'rgba(244, 63, 94, 0.2)',
+    mockupAccent: 'bg-rose-400/30',
   },
   emerald: {
-    border: 'group-hover:border-emerald-500/50',
-    glow: 'from-emerald-600/20 via-emerald-500/5 to-transparent',
-    icon: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/25',
-    tag: 'text-emerald-300 bg-emerald-500/15 border-emerald-500/30',
-    metric: 'text-emerald-200',
-    line: 'from-emerald-500 to-teal-500',
+    ring: 'group-hover:shadow-[0_0_40px_rgba(52,211,153,0.12)]',
+    icon: 'text-emerald-300 bg-emerald-500/12 border-emerald-400/20',
+    tag: 'text-emerald-200/90 bg-emerald-500/12 border-emerald-400/25',
+    metric: 'text-emerald-300',
+    line: 'from-emerald-400 to-teal-400',
     arrow: 'text-emerald-400',
-    cursor: 'rgba(52, 211, 153, 0.18)',
+    cursor: 'rgba(52, 211, 153, 0.2)',
+    mockupAccent: 'bg-emerald-400/30',
   },
 }
 
@@ -61,14 +60,24 @@ type Props = {
   card: CardData
   variants?: Variants
   tilt?: boolean
+  index?: number
   className?: string
 }
 
-export function FeatureCard({ card, variants, tilt = false, className = '' }: Props) {
+export function FeatureCard({ card, variants, tilt = false, index, className = '' }: Props) {
   const a = accentMap[card.accent]
   const Icon = card.icon
   const ref = useRef<HTMLElement>(null)
   const glowRef = useRef<HTMLDivElement>(null)
+  const tiltRef = useRef({ x: 0, y: 0 })
+  const rafRef = useRef(0)
+
+  const applyTilt = () => {
+    const el = ref.current
+    if (!el || !tilt) return
+    const { x, y } = tiltRef.current
+    el.style.transform = `perspective(1000px) rotateX(${y}deg) rotateY(${x}deg) scale3d(1.01, 1.01, 1.01)`
+  }
 
   const handleMove = (e: MouseEvent) => {
     const el = ref.current
@@ -80,22 +89,28 @@ export function FeatureCard({ card, variants, tilt = false, className = '' }: Pr
     const py = (e.clientY - rect.top) / rect.height
 
     if (glow) {
-      glow.style.background = `radial-gradient(280px circle at ${px * 100}% ${py * 100}%, ${a.cursor}, transparent 65%)`
+      glow.style.background = `radial-gradient(320px circle at ${px * 100}% ${py * 100}%, ${a.cursor}, transparent 68%)`
       glow.style.opacity = '1'
     }
 
     if (tilt) {
-      const rotateY = (px - 0.5) * 14
-      const rotateX = (0.5 - py) * 10
-      el.style.transform = `perspective(900px) rotateX(${Math.max(-8, Math.min(8, rotateX))}deg) rotateY(${Math.max(-8, Math.min(8, rotateY))}deg)`
+      tiltRef.current = {
+        x: Math.max(-7, Math.min(7, (px - 0.5) * 16)),
+        y: Math.max(-6, Math.min(6, (0.5 - py) * 12)),
+      }
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(applyTilt)
     }
   }
 
   const handleLeave = () => {
     const el = ref.current
     const glow = glowRef.current
-    if (el && tilt) el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)'
     if (glow) glow.style.opacity = '0'
+    if (el && tilt) {
+      tiltRef.current = { x: 0, y: 0 }
+      el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)'
+    }
   }
 
   return (
@@ -105,75 +120,87 @@ export function FeatureCard({ card, variants, tilt = false, className = '' }: Pr
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
       data-cursor-hover
-      className={`group relative overflow-hidden rounded-lg border border-white/10 bg-white/[0.02] backdrop-blur-sm transition-[border-color,transform] duration-200 ${a.border} ${className}`}
+      className={`group relative ${a.ring} ${className}`}
       style={{ transformStyle: 'preserve-3d', willChange: tilt ? 'transform' : undefined }}
     >
-      <div
-        ref={glowRef}
-        className="pointer-events-none absolute inset-0 z-[1] opacity-0 transition-opacity duration-300"
-      />
-
-      {card.mockup && (
+      <div className="card-shell relative overflow-hidden">
         <div
-          className={`relative h-36 overflow-hidden border-b border-white/8 bg-gradient-to-br sm:h-40 ${card.mockup.gradient} ${card.mockup.pattern ?? ''}`}
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,rgba(0,0,0,0.85)_100%)]" />
-          <div className="absolute bottom-3 left-4 flex items-center gap-2">
-            <div className={`flex h-8 w-8 items-center justify-center rounded border ${a.icon}`}>
-              <Icon size={14} strokeWidth={1.5} />
+          ref={glowRef}
+          className="pointer-events-none absolute inset-0 z-[2] opacity-0 transition-opacity duration-500"
+        />
+
+        {card.mockup && (
+          <div className={`relative overflow-hidden bg-gradient-to-br ${card.mockup.gradient} ${card.mockup.pattern ?? ''}`}>
+            {/* Browser chrome */}
+            <div className="flex items-center gap-2 border-b border-white/[0.06] bg-black/30 px-4 py-2.5 backdrop-blur-md">
+              <div className="flex gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-white/15" />
+                <span className="h-2 w-2 rounded-full bg-white/10" />
+                <span className="h-2 w-2 rounded-full bg-white/10" />
+              </div>
+              <div className="mx-auto h-5 flex-1 max-w-[140px] rounded-md bg-white/[0.06]" />
+              {index !== undefined && (
+                <span className="font-display text-[10px] text-white/25">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              )}
             </div>
-            {card.mockup.label && (
-              <span className="font-inter text-[9px] uppercase tracking-widest text-white/40">
-                {card.mockup.label}
+
+            <div className="relative h-32 sm:h-36">
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(0,0,0,0.9)_100%)]" />
+              <div className={`absolute left-5 top-5 h-20 w-28 rounded-xl border border-white/10 bg-black/20 backdrop-blur-sm ${a.mockupAccent}`} />
+              <div className="absolute right-5 top-6 h-14 w-20 rounded-lg border border-white/8 bg-white/[0.04]" />
+              <div className="absolute bottom-4 left-5 flex items-center gap-2">
+                <div className={`flex h-7 w-7 items-center justify-center rounded-lg border ${a.icon}`}>
+                  <Icon size={13} strokeWidth={1.5} />
+                </div>
+                {card.mockup.label && (
+                  <span className="font-inter text-[9px] uppercase tracking-widest text-white/45">
+                    {card.mockup.label}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="relative z-[1] p-5">
+          {!card.mockup && (
+            <div className="mb-4 flex items-start justify-between gap-3">
+              <div className={`flex h-10 w-10 items-center justify-center rounded-xl border ${a.icon}`}>
+                <Icon size={18} strokeWidth={1.5} />
+              </div>
+              <span className={`rounded-full border px-2.5 py-0.5 font-inter text-[9px] uppercase tracking-widest ${a.tag}`}>
+                {card.tag}
+              </span>
+            </div>
+          )}
+
+          <div className="mb-2 flex items-start justify-between gap-3">
+            <h3 className="font-display text-base uppercase leading-tight text-white">{card.title}</h3>
+            {card.mockup && (
+              <span className={`shrink-0 rounded-full border px-2 py-0.5 font-inter text-[9px] uppercase tracking-widest ${a.tag}`}>
+                {card.tag}
               </span>
             )}
           </div>
-          <div className="absolute right-4 top-4 h-16 w-24 rounded border border-white/10 bg-white/5 backdrop-blur-sm" />
-          <div className="absolute right-6 top-7 h-1.5 w-14 rounded-full bg-white/20" />
-          <div className="absolute right-6 top-10 h-1 w-10 rounded-full bg-white/10" />
-        </div>
-      )}
 
-      <div className={`relative z-10 ${card.mockup ? 'p-5' : 'p-5'}`}>
-        {!card.mockup && (
-          <div className="mb-4 flex items-start justify-between gap-3">
-            <div className={`flex h-10 w-10 items-center justify-center rounded-md border ${a.icon}`}>
-              <Icon size={18} strokeWidth={1.5} />
-            </div>
-            <span className={`rounded-full border px-2.5 py-0.5 font-inter text-[9px] uppercase tracking-widest ${a.tag}`}>
-              {card.tag}
+          {card.metric && (
+            <p className={`mb-2.5 font-inter text-[11px] font-medium tracking-wide ${a.metric}`}>
+              {card.metric}
+            </p>
+          )}
+
+          <p className="text-[13px] leading-relaxed text-white/52">{card.text}</p>
+
+          <div className="mt-5 flex items-center justify-between">
+            <span className="flex items-center gap-1 font-inter text-[10px] uppercase tracking-widest text-white/30 transition-colors group-hover:text-white/65">
+              Подробнее
+              <ArrowUpRight size={12} strokeWidth={1.5} className={a.arrow} />
             </span>
+            <div className={`h-[2px] w-8 bg-gradient-to-r ${a.line} opacity-40 transition-all duration-500 group-hover:w-16 group-hover:opacity-100`} />
           </div>
-        )}
-
-        <div className="mb-3 flex items-end justify-between gap-2">
-          <h3 className="font-inter text-sm font-semibold text-white">{card.title}</h3>
-          <span className={`shrink-0 rounded-full border px-2 py-0.5 font-inter text-[9px] uppercase tracking-widest ${a.tag}`}>
-            {card.tag}
-          </span>
         </div>
-
-        {card.metric && (
-          <p className={`mb-2 font-display text-[11px] uppercase tracking-wide ${a.metric}`}>
-            {card.metric}
-          </p>
-        )}
-
-        <p className="text-xs leading-relaxed text-white/50">{card.text}</p>
-
-        <motion.div
-          className="mt-4 flex items-center gap-1 font-inter text-[10px] uppercase tracking-widest text-white/35 group-hover:text-white/70"
-          whileHover={{ x: 4 }}
-          transition={{ duration: 0.18 }}
-        >
-          Подробнее
-          <ArrowUpRight size={12} strokeWidth={1.5} className={`opacity-60 transition-colors group-hover:opacity-100 ${a.arrow}`} />
-        </motion.div>
-
-        <motion.div
-          className={`mt-3 h-[2px] w-0 bg-gradient-to-r ${a.line} group-hover:w-full`}
-          transition={{ duration: 0.35, ease: SNAP }}
-        />
       </div>
     </motion.article>
   )

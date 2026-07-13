@@ -5,32 +5,18 @@ import { getSectionMotion } from '../lib/sectionMotion'
 import { FeatureCard } from './FeatureCard'
 import { LaunchBlock } from './LaunchBlock'
 
-const accentLineInitial = {
-  'scale-y': { scaleY: 0 },
-  'scale-x': { scaleX: 0 },
-  skew: { scaleX: 0, skewX: -12 },
-  glow: { scaleX: 0, opacity: 0 },
-} as const
+const SECTION_GLOW: Record<string, { color: string; position: string }> = {
+  projects: { color: 'rgba(139,92,246,0.18)', position: 'top-0 right-0 h-[420px] w-[420px]' },
+  ecosystem: { color: 'rgba(34,211,238,0.12)', position: 'top-20 left-0 h-[360px] w-[360px]' },
+  services: { color: 'rgba(251,191,36,0.1)', position: 'bottom-0 right-1/4 h-[300px] w-[300px]' },
+  launch: { color: 'rgba(244,63,94,0.12)', position: 'top-1/3 left-1/2 h-[400px] w-[400px]' },
+}
 
-const accentLineAnimate = {
-  'scale-y': { scaleY: 1 },
-  'scale-x': { scaleX: 1 },
-  skew: { scaleX: 1, skewX: 0 },
-  glow: { scaleX: 1, opacity: 1 },
-} as const
-
-const accentLineOrigin = {
-  'scale-y': 'origin-top',
-  'scale-x': 'origin-left',
-  skew: 'origin-left',
-  glow: 'origin-center',
-} as const
-
-const accentGradients = {
-  projects: 'from-violet-500 via-fuchsia-500/60 to-transparent',
-  ecosystem: 'from-cyan-400 via-blue-500/50 to-transparent',
-  services: 'from-amber-400 via-orange-500/50 to-transparent',
-  launch: 'from-rose-400 via-violet-500/60 to-transparent',
+const SECTION_NUM: Record<string, string> = {
+  projects: '01',
+  ecosystem: '02',
+  services: '03',
+  launch: '04',
 }
 
 export function SectionBlock({
@@ -44,61 +30,80 @@ export function SectionBlock({
   onWallet?: () => void
   onLeadSubmit?: (data: { name: string; contact: string }) => void
 }) {
-  const isEven = index % 2 === 1
   const motionProfile = getSectionMotion(section.id)
-  const lineType = motionProfile.accentLine
-  const gradient = accentGradients[section.id as keyof typeof accentGradients] ?? accentGradients.projects
   const isProjects = section.id === 'projects'
+  const glow = SECTION_GLOW[section.id]
+  const sectionNum = SECTION_NUM[section.id] ?? '00'
+
   const gridClass = isProjects
-    ? 'mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:auto-rows-fr'
-    : 'mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3'
+    ? 'mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:auto-rows-fr'
+    : 'mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
     <section
       id={section.id}
-      className={`scroll-section border-t border-white/8 px-6 py-20 sm:px-10 lg:px-16 ${isEven ? 'bg-[#0a0a0a]' : 'bg-[#050505]'}`}
+      className="scroll-section relative overflow-hidden border-t border-white/[0.06] px-6 py-24 sm:px-10 lg:px-16"
     >
-      <div className="mx-auto max-w-6xl">
+      {glow && (
+        <div
+          className={`section-glow absolute ${glow.position}`}
+          style={{ background: glow.color }}
+          aria-hidden="true"
+        />
+      )}
+
+      <div className="relative mx-auto max-w-6xl">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={sectionViewport}
           variants={motionProfile.section}
-          className="origin-top"
         >
-          <motion.div
-            initial={accentLineInitial[lineType]}
-            whileInView={accentLineAnimate[lineType]}
-            viewport={sectionViewport}
-            transition={{ duration: 0.16, ease: [1, 0, 0, 1] }}
-            className={`mb-6 h-[2px] w-24 bg-gradient-to-r ${gradient} ${accentLineOrigin[lineType]} ${lineType === 'glow' ? 'shadow-[0_0_12px_rgba(167,139,250,0.5)]' : ''}`}
-          />
+          <div className="relative mb-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={textViewport}
+              variants={motionProfile.textStagger}
+              className="relative max-w-2xl"
+            >
+              <span
+                className="pointer-events-none absolute -left-2 -top-8 font-display text-[5rem] leading-none text-white/[0.03] sm:text-[7rem] lg:-left-6 lg:-top-12"
+                aria-hidden="true"
+              >
+                {sectionNum}
+              </span>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={textViewport}
-            variants={motionProfile.textStagger}
-          >
-            <motion.p
-              variants={motionProfile.eyebrow}
-              className="mb-2 font-inter text-[10px] uppercase tracking-[0.22em] text-violet-400"
-            >
-              {section.eyebrow}
-            </motion.p>
-            <motion.h2
-              variants={motionProfile.title}
-              className="font-display text-[clamp(1.5rem,3.5vw,2.25rem)] uppercase neon-glow"
-            >
-              {section.title}
-            </motion.h2>
-            <motion.p
-              variants={motionProfile.lead}
-              className="mt-3 max-w-xl text-sm leading-relaxed text-white/60"
-            >
-              {section.lead}
-            </motion.p>
-          </motion.div>
+              <motion.div variants={motionProfile.eyebrow} className="mb-3 flex items-center gap-3">
+                <span className="font-display text-sm text-violet-400/80">{sectionNum}</span>
+                <span className="h-px w-8 bg-violet-500/40" />
+                <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-[10px] uppercase tracking-[0.18em] text-white/50">
+                  {section.eyebrow}
+                </span>
+              </motion.div>
+
+              <motion.h2
+                variants={motionProfile.title}
+                className="text-balance font-display text-[clamp(1.75rem,4vw,2.75rem)] uppercase leading-[0.95] text-white"
+              >
+                {section.title}
+              </motion.h2>
+              <motion.p
+                variants={motionProfile.lead}
+                className="mt-4 max-w-lg text-sm leading-relaxed text-white/55"
+              >
+                {section.lead}
+              </motion.p>
+            </motion.div>
+
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={sectionViewport}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="hidden h-px w-32 origin-left bg-gradient-to-r from-violet-500/60 to-transparent lg:block"
+            />
+          </div>
         </motion.div>
 
         {section.cards.length > 0 && (
@@ -108,12 +113,13 @@ export function SectionBlock({
             whileInView="visible"
             viewport={cardsViewport}
             variants={motionProfile.cardStagger}
-            style={{ perspective: 1000 }}
+            style={{ perspective: 1200 }}
           >
             {section.cards.map((card, i) => (
               <FeatureCard
                 key={card.title}
                 card={card}
+                index={isProjects ? i : undefined}
                 variants={motionProfile.card(i)}
                 tilt={isProjects}
                 className={card.layoutClass ?? ''}
