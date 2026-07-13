@@ -214,38 +214,30 @@ export function RainOverlay() {
         })
       }
 
-      const maxSplashes = coarse ? 14 : 25
+      const maxSplashes = coarse ? 7 : 12
       if (splashesRef.current.length > maxSplashes) {
         splashesRef.current.splice(0, splashesRef.current.length - maxSplashes)
       }
     }
 
     const spawnDrop = () => {
-      const chance = coarse ? 0.45 : 0.55
+      const chance = coarse ? 0.22 : 0.28
       if (Math.random() > chance) return
 
-      const count = 1
-      for (let i = 0; i < count; i++) {
-        dropsRef.current.push(createDrop())
-      }
-      const max = coarse ? 22 : 38
+      dropsRef.current.push(createDrop())
+      const max = coarse ? 11 : 19
       if (dropsRef.current.length > max) {
         dropsRef.current.splice(0, dropsRef.current.length - max)
       }
     }
 
     const spawnImpactDrop = () => {
-      const chance = coarse ? 0.31 : 0.36
+      const chance = coarse ? 0.15 : 0.18
       if (Math.random() > chance) return
-      const maxImpacts = coarse ? 55 : 110
+      const maxImpacts = coarse ? 28 : 55
       if (impactsRef.current.length >= maxImpacts) return
 
-      const count = coarse
-        ? 1
-        : Math.random() < 0.3 ? 2 : 1
-      for (let i = 0; i < count; i++) {
-        impactsRef.current.push(createImpactDrop())
-      }
+      impactsRef.current.push(createImpactDrop())
     }
 
     const spawnRipple = (x: number, y: number, heavy: boolean) => {
@@ -410,11 +402,11 @@ export function RainOverlay() {
     let lastSpawn = 0
     let lastImpactSpawn = 0
     const draw = (now: number) => {
-      if (now - lastSpawn > (coarse ? 110 : 76)) {
+      if (now - lastSpawn > (coarse ? 220 : 152)) {
         spawnDrop()
         lastSpawn = now
       }
-      if (now - lastImpactSpawn > (coarse ? 28 : 18)) {
+      if (now - lastImpactSpawn > (coarse ? 56 : 36)) {
         spawnImpactDrop()
         lastImpactSpawn = now
       }
@@ -492,8 +484,8 @@ export function RainOverlay() {
     }
 
     resize()
-    const bgSeed = coarse ? 12 : 19
-    const impactSeed = coarse ? 35 : 75
+    const bgSeed = coarse ? 6 : 10
+    const impactSeed = coarse ? 18 : 38
     for (let i = 0; i < bgSeed; i++) {
       dropsRef.current.push(createDrop(true))
     }
