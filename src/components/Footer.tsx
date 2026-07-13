@@ -1,0 +1,75 @@
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
+import { NAV_LINKS } from '../lib/data'
+import { fadeUp, staggerContainer } from '../lib/motion'
+
+export function Footer() {
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, { once: true, margin: '-60px' })
+
+  return (
+    <motion.footer
+      ref={ref}
+      id="footer"
+      className="border-t border-white/10 bg-black px-6 py-14 sm:px-10 lg:px-16"
+      variants={staggerContainer}
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
+          <motion.div variants={fadeUp}>
+            <a href="#top" className="font-podium text-xl font-bold uppercase tracking-wider text-white neon-glow">
+              VANGUARD
+            </a>
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/50">
+              Креативная Web3-студия нового поколения. Строим бренды и продукты, которые доминируют на рынке криптовалют.
+            </p>
+          </motion.div>
+
+          {[
+            { title: 'Навигация', links: NAV_LINKS.map((l) => ({ href: `#${l.id}`, label: l.label })) },
+            {
+              title: 'Соцсети',
+              links: [
+                { href: 'https://twitter.com', label: 'Twitter / X' },
+                { href: 'https://discord.com', label: 'Discord' },
+                { href: 'https://t.me', label: 'Telegram' },
+              ],
+            },
+            {
+              title: 'Правовая информация',
+              links: [
+                { href: '#footer', label: 'Политика конфиденциальности' },
+                { href: '#footer', label: 'Условия использования' },
+                { href: '#footer', label: 'Политика cookie' },
+              ],
+            },
+          ].map((col) => (
+            <motion.div key={col.title} variants={fadeUp}>
+              <h4 className="mb-3 font-inter text-[10px] uppercase tracking-[0.14em] text-white/40">{col.title}</h4>
+              {col.links.map((link) => (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  className="block py-0.5 text-sm text-white/60 transition-colors hover:text-violet-300"
+                  whileHover={{ x: 4 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </motion.div>
+          ))}
+        </div>
+
+        <motion.div
+          variants={fadeUp}
+          className="mt-10 flex flex-wrap justify-between gap-3 border-t border-white/8 pt-6 text-xs text-white/40"
+        >
+          <span>© 2026 VANGUARD Studio. Все права защищены.</span>
+          <span>Создавай. Запускай. Доминируй.</span>
+        </motion.div>
+      </div>
+    </motion.footer>
+  )
+}

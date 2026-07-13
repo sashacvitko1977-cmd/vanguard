@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    @apply m-0 overflow-x-hidden bg-black font-inter text-white;
+  }
+}
+
+.font-podium {
+  font-family: "FSP DEMO - PODIUM Sharp 4.11", sans-serif;
+}
+
+/* ——— Neon effects ——— */
+.neon-glow {
+  text-shadow:
+    0 0 16px rgba(255, 255, 255, 0.2),
+    0 0 32px rgba(139, 92, 246, 0.12);
+}
+
+.neon-border {
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.06),
+    inset 0 0 16px rgba(255, 255, 255, 0.02);
+}
+
+.neon-border:hover {
+  box-shadow:
+    0 0 24px rgba(255, 255, 255, 0.14),
+    0 0 48px rgba(139, 92, 246, 0.1),
+    inset 0 0 20px rgba(255, 255, 255, 0.04);
+}
+
+.shadow-neon {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), 0 0 40px rgba(124, 58, 237, 0.1);
+}
+
+/* ——— Button arrow ——— */
+.btn-arrow .arrow-icon {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-arrow:hover .arrow-icon {
+  transform: translate(3px, -3px);
+}
+
+/* ——— Card glow on hover ——— */
+.card-glow:hover {
+  border-color: rgba(167, 139, 250, 0.35);
+}
+
+/* ——— Progress bar glow ——— */
+.progress-bar {
+  box-shadow: 0 0 12px rgba(167, 139, 250, 0.5);
+}
+
+/* ——— Reduced motion ——— */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

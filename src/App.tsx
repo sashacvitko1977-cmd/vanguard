@@ -1,0 +1,72 @@
+import { useState, useEffect } from 'react'
+import { Header } from './components/Header'
+import { Hero } from './components/Hero'
+import { SectionBlock } from './components/SectionBlock'
+import { Footer } from './components/Footer'
+import { MobileMenu } from './components/MobileMenu'
+import { WalletModal } from './components/WalletModal'
+import { Toast } from './components/Toast'
+import { ScrollProgress } from './components/ScrollProgress'
+import { BackToTop } from './components/BackToTop'
+import { SECTIONS } from './lib/data'
+
+export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [walletOpen, setWalletOpen] = useState(false)
+  const [toast, setToast] = useState('')
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen || walletOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen, walletOpen])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMenuOpen(false)
+        setWalletOpen(false)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
+  const showToast = (msg: string) => {
+    setToast(msg)
+    setTimeout(() => setToast(''), 3000)
+  }
+
+  return (
+    <>
+      <ScrollProgress />
+      <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
+      <main>
+        <Hero />
+        {SECTIONS.map((section, i) => (
+          <SectionBlock
+            key={section.id}
+            section={section}
+            index={i}
+            onWallet={section.id === 'launch' ? () => setWalletOpen(true) : undefined}
+          />
+        ))}
+      </main>
+      <Footer />
+      <BackToTop />
+      <MobileMenu
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        onWallet={() => setWalletOpen(true)}
+      />
+      <WalletModal
+        open={walletOpen}
+        onClose={() => setWalletOpen(false)}
+        onConnect={() => {
+          setWalletOpen(false)
+          showToast('Демо: кошелёк подключён успешно')
+        }}
+      />
+      <Toast message={toast} visible={!!toast} />
+    </>
+  )
+}
