@@ -204,4 +204,9 @@
   .signal-line {
     animation: none;
   }
+
+  .scroll-section {
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }

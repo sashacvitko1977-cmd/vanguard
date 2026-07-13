@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useInView } from 'framer-motion'
 import type { SectionData } from '../lib/data'
 import { sectionViewport } from '../lib/motion'
 import { getSectionEntrance } from '../lib/sectionMotion'
@@ -26,6 +27,13 @@ const SECTION_NUM: Record<string, string> = {
   launch: '04',
 }
 
+const IMPACT_LINE: Record<string, string> = {
+  projects: 'bg-violet-400',
+  ecosystem: 'bg-cyan-400',
+  services: 'bg-amber-400',
+  launch: 'bg-rose-400',
+}
+
 export function SectionBlock({
   section,
   onWallet,
@@ -36,28 +44,41 @@ export function SectionBlock({
   onWallet?: () => void
   onLeadSubmit?: (data: { name: string; contact: string }) => void
 }) {
+  const ref = useRef<HTMLElement>(null)
+  const inView = useInView(ref, sectionViewport)
   const entrance = getSectionEntrance(section.id)
   const isProjects = section.id === 'projects'
   const glow = SECTION_GLOW[section.id]
   const surface = SECTION_SURFACE[section.id] ?? SECTION_SURFACE.projects
   const sectionNum = SECTION_NUM[section.id] ?? '00'
+  const impactLine = IMPACT_LINE[section.id] ?? 'bg-violet-400'
 
   const gridClass = isProjects
     ? 'mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:auto-rows-fr'
     : 'mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-x-clip">
       <motion.section
+        ref={ref}
         id={section.id}
         initial="hidden"
-        whileInView="visible"
-        viewport={sectionViewport}
+        animate={inView ? 'visible' : 'hidden'}
         variants={entrance}
-        className="scroll-section relative border-t border-white/[0.06] will-change-transform"
-        style={{ transformOrigin: section.id === 'services' ? 'bottom center' : 'center center' }}
+        className="scroll-section relative w-full border-t border-white/[0.06] will-change-transform"
+        style={{
+          transformOrigin: section.id === 'services' ? 'bottom center' : 'center center',
+          backfaceVisibility: 'hidden',
+        }}
       >
-        {/* Фон раздела — летит вместе со всем блоком */}
+        {/* Ударная линия при влёте */}
+        <motion.div
+          className={`absolute left-0 right-0 top-0 z-20 h-[3px] ${impactLine} origin-left`}
+          initial={{ scaleX: 0, opacity: 0 }}
+          animate={inView ? { scaleX: 1, opacity: [0, 1, 0.6] } : { scaleX: 0, opacity: 0 }}
+          transition={{ duration: 0.12, ease: [1, 0, 0, 1] }}
+        />
+
         <div
           className={`absolute inset-0 bg-gradient-to-b ${surface}`}
           aria-hidden="true"

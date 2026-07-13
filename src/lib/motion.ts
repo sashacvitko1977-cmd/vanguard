@@ -12,33 +12,34 @@ export const springBrutal = { type: 'spring' as const, stiffness: 960, damping: 
 const brutal = { duration: 0.18, ease: SNAP_BRUTAL }
 const hard = { duration: 0.2, ease: SNAP_HARD }
 
-/** Триггер: раздел влетает целиком */
-export const sectionViewport = { once: true, margin: '0px 0px -5% 0px', amount: 0.08 as const }
+/** Триггер: влет в момент касания края viewport */
+export const sectionViewport = { once: true, margin: '0px 0px -25% 0px', amount: 0.01 as const }
 export const textViewport = { once: true, margin: '0px 0px -6% 0px', amount: 0.25 as const }
 export const cardsViewport = { once: true, margin: '0px 0px -10% 0px', amount: 0.12 as const }
 
-/** Резкий влет всего раздела — без stagger, один удар */
-const slam = { duration: 0.36, ease: SNAP_BRUTAL }
-const slamHard = { duration: 0.32, ease: SNAP_HARD }
+/** Максимально резкий slam — ~80ms, почти мгновенно */
+const SLAM = { type: 'tween' as const, duration: 0.085, ease: [1, 0, 0, 1] as const }
+const SLAM_UP = { type: 'tween' as const, duration: 0.09, ease: [1, 0, 0, 1] as const }
+const SLAM_VOID = { type: 'tween' as const, duration: 0.08, ease: [0.95, 0, 0.05, 1] as const }
 
 export const sectionFromLeft: Variants = {
-  hidden: { x: '-100vw' },
-  visible: { x: 0, transition: slam },
+  hidden: { x: '-105vw', skewX: -5 },
+  visible: { x: 0, skewX: 0, transition: SLAM },
 }
 
 export const sectionFromRight: Variants = {
-  hidden: { x: '100vw' },
-  visible: { x: 0, transition: slam },
+  hidden: { x: '105vw', skewX: 5 },
+  visible: { x: 0, skewX: 0, transition: SLAM },
 }
 
 export const sectionFromBottom: Variants = {
-  hidden: { y: '100%' },
-  visible: { y: 0, transition: { duration: 0.38, ease: SNAP_BRUTAL } },
+  hidden: { y: '110vh' },
+  visible: { y: 0, transition: SLAM_UP },
 }
 
 export const sectionFromVoid: Variants = {
-  hidden: { scale: 0.82, opacity: 0 },
-  visible: { scale: 1, opacity: 1, transition: slamHard },
+  hidden: { scale: 0.55, opacity: 0 },
+  visible: { scale: 1, opacity: 1, transition: SLAM_VOID },
 }
 
 export const sectionSlamDown = sectionFromBottom
