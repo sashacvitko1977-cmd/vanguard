@@ -36,7 +36,7 @@ export function Footer() {
   return (
     <motion.footer
       id="footer"
-      className="border-t border-white/10 bg-black px-6 py-14 sm:px-10 lg:px-16"
+      className="relative z-10 border-t border-white/10 bg-black/40 px-6 py-14 backdrop-blur-md sm:px-10 lg:px-16"
       initial="hidden"
       whileInView="visible"
       viewport={textViewport}

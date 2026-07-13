@@ -14,10 +14,10 @@ const SECTION_GLOW: Record<string, { color: string; position: string }> = {
 }
 
 const SECTION_SURFACE: Record<string, string> = {
-  projects: 'from-violet-950/40 via-[#06060c] to-[#050508]',
-  ecosystem: 'from-cyan-950/25 via-[#050810] to-[#050508]',
-  services: 'from-amber-950/20 via-[#08060a] to-[#050508]',
-  launch: 'from-rose-950/25 via-[#08050a] to-[#050508]',
+  projects: 'from-violet-950/25 via-black/35 to-black/45',
+  ecosystem: 'from-cyan-950/20 via-black/30 to-black/45',
+  services: 'from-amber-950/15 via-black/32 to-black/45',
+  launch: 'from-rose-950/20 via-black/30 to-black/45',
 }
 
 const SECTION_NUM: Record<string, string> = {

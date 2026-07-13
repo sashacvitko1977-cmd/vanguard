@@ -9,6 +9,8 @@ import { Toast } from './components/Toast'
 import { ScrollProgress } from './components/ScrollProgress'
 import { BackToTop } from './components/BackToTop'
 import { CustomCursor } from './components/CustomCursor'
+import { GlobalVideoBackground } from './components/GlobalVideoBackground'
+import { RainOverlay } from './components/RainOverlay'
 import { SECTIONS } from './lib/data'
 
 export default function App() {
@@ -39,11 +41,13 @@ export default function App() {
 
   return (
     <>
+      <GlobalVideoBackground />
+      <RainOverlay />
       <div className="grain-overlay" aria-hidden="true" />
       <CustomCursor />
       <ScrollProgress />
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
-      <main>
+      <main className="relative z-10">
         <Hero />
         {SECTIONS.map((section, i) => (
           <SectionBlock
