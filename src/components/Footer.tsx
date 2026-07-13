@@ -1,7 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { NAV_LINKS } from '../lib/data'
-import { fadeUp, staggerContainer } from '../lib/motion'
+import { snapFadeUp, snapStagger } from '../lib/motion'
 
 export function Footer() {
   const ref = useRef<HTMLElement>(null)
@@ -12,13 +12,13 @@ export function Footer() {
       ref={ref}
       id="footer"
       className="border-t border-white/10 bg-black px-6 py-14 sm:px-10 lg:px-16"
-      variants={staggerContainer}
+      variants={snapStagger}
       initial="hidden"
       animate={inView ? 'visible' : 'hidden'}
     >
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
-          <motion.div variants={fadeUp}>
+          <motion.div variants={snapFadeUp}>
             <a href="#top" className="font-podium text-xl font-bold uppercase tracking-wider text-white neon-glow">
               VANGUARD
             </a>
@@ -46,7 +46,7 @@ export function Footer() {
               ],
             },
           ].map((col) => (
-            <motion.div key={col.title} variants={fadeUp}>
+            <motion.div key={col.title} variants={snapFadeUp}>
               <h4 className="mb-3 font-inter text-[10px] uppercase tracking-[0.14em] text-white/40">{col.title}</h4>
               {col.links.map((link) => (
                 <motion.a
@@ -63,7 +63,7 @@ export function Footer() {
         </div>
 
         <motion.div
-          variants={fadeUp}
+          variants={snapFadeUp}
           className="mt-10 flex flex-wrap justify-between gap-3 border-t border-white/8 pt-6 text-xs text-white/40"
         >
           <span>© 2026 VANGUARD Studio. Все права защищены.</span>

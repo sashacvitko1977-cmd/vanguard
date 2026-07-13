@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { EASE_OUT_EXPO } from '../lib/motion'
+import { SNAP_HARD } from '../lib/motion'
 
 type Props = {
   text: string
@@ -8,7 +8,7 @@ type Props = {
   as?: 'h1' | 'p' | 'span'
 }
 
-/** Появление текста по словам */
+/** Резкое появление текста по словам */
 export function TextReveal({ text, className = '', delay = 0, as: Tag = 'span' }: Props) {
   const words = text.split(' ')
 
@@ -18,12 +18,12 @@ export function TextReveal({ text, className = '', delay = 0, as: Tag = 'span' }
         <span key={`${word}-${i}`} className="inline-block overflow-hidden">
           <motion.span
             className="inline-block"
-            initial={{ y: '110%', opacity: 0, filter: 'blur(4px)' }}
-            animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+            initial={{ y: '100%', opacity: 0, skewY: 4 }}
+            animate={{ y: 0, opacity: 1, skewY: 0 }}
             transition={{
-              duration: 0.7,
-              delay: delay + i * 0.06,
-              ease: EASE_OUT_EXPO,
+              duration: 0.28,
+              delay: delay + i * 0.04,
+              ease: SNAP_HARD,
             }}
           >
             {word}&nbsp;

@@ -1,31 +1,25 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import type { SectionData } from '../lib/data'
 import {
-  fadeUp,
-  staggerContainer,
-  slideFromLeft,
-  scaleRotateIn,
-  clipWipe,
-  cardHover,
-  EASE_OUT_EXPO,
+  snapFadeUp,
+  snapSlideLeft,
+  snapScale,
+  snapClip,
+  snapStagger,
+  cardSnapIn,
+  textSnap,
+  eyebrowSnap,
 } from '../lib/motion'
+import { FeatureCard } from './FeatureCard'
 import { MagneticButton } from './MagneticButton'
 import { ArrowUpRight } from 'lucide-react'
 
-type Section = {
-  id: string
-  eyebrow: string
-  title: string
-  lead: string
-  animation: 'fade-up' | 'slide-blur' | 'scale-rotate' | 'clip-wipe'
-  cards: readonly { title: string; text: string }[]
-}
-
-const headerVariants = {
-  'fade-up': fadeUp,
-  'slide-blur': slideFromLeft,
-  'scale-rotate': scaleRotateIn,
-  'clip-wipe': clipWipe,
+const sectionVariants = {
+  'fade-up': snapFadeUp,
+  'slide-blur': snapSlideLeft,
+  'scale-rotate': snapScale,
+  'clip-wipe': snapClip,
 }
 
 export function SectionBlock({
@@ -33,84 +27,69 @@ export function SectionBlock({
   index,
   onWallet,
 }: {
-  section: Section
+  section: SectionData
   index: number
   onWallet?: () => void
 }) {
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, { once: true, margin: '-100px' })
   const isEven = index % 2 === 1
-  const HeaderVariant = headerVariants[section.animation]
+  const SectionVariant = sectionVariants[section.animation]
 
   return (
-    <section
+    <motion.section
       ref={ref}
       id={section.id}
+      variants={SectionVariant}
+      initial="hidden"
+      animate={inView ? 'visible' : 'hidden'}
       className={`scroll-section border-t border-white/8 px-6 py-20 sm:px-10 lg:px-16 ${isEven ? 'bg-[#0a0a0a]' : 'bg-[#050505]'}`}
     >
       <div className="mx-auto max-w-6xl">
         <motion.div
-          variants={HeaderVariant}
+          variants={snapStagger}
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
         >
           <motion.p
+            variants={eyebrowSnap}
             className="mb-2 font-inter text-[10px] uppercase tracking-[0.22em] text-violet-400"
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.1 }}
           >
             {section.eyebrow}
           </motion.p>
-          <h2 className="font-podium text-[clamp(1.5rem,3.5vw,2.25rem)] uppercase neon-glow">
+          <motion.h2
+            variants={textSnap}
+            className="font-podium text-[clamp(1.5rem,3.5vw,2.25rem)] uppercase neon-glow"
+          >
             {section.title}
-          </h2>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60">{section.lead}</p>
+          </motion.h2>
+          <motion.p
+            variants={textSnap}
+            className="mt-3 max-w-xl text-sm leading-relaxed text-white/60"
+          >
+            {section.lead}
+          </motion.p>
         </motion.div>
 
         {section.cards.length > 0 && (
           <motion.div
             className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-            variants={staggerContainer}
+            variants={snapStagger}
             initial="hidden"
             animate={inView ? 'visible' : 'hidden'}
+            style={{ perspective: 900 }}
           >
-            {section.cards.map((card, i) => (
-              <motion.article
-                key={card.title}
-                variants={fadeUp}
-                initial="rest"
-                whileHover="hover"
-                animate="rest"
-                custom={i}
-                className="card-glow group rounded-sm border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm"
-                style={{ transition: 'border-color 0.4s' }}
-              >
-                <motion.div variants={cardHover}>
-                  <motion.h3
-                    className="mb-2 text-sm font-semibold text-white"
-                    whileHover={{ x: 4 }}
-                    transition={{ ease: EASE_OUT_EXPO }}
-                  >
-                    {card.title}
-                  </motion.h3>
-                  <p className="text-xs leading-relaxed text-white/55">{card.text}</p>
-                  <motion.div
-                    className="mt-4 h-px w-0 bg-gradient-to-r from-violet-500/60 to-transparent"
-                    whileHover={{ width: '100%' }}
-                    transition={{ duration: 0.5 }}
-                  />
-                </motion.div>
-              </motion.article>
+            {section.cards.map((card) => (
+              <FeatureCard key={card.title} card={card} variants={cardSnapIn} />
             ))}
           </motion.div>
         )}
 
-        {section.id === 'launch' && inView && (
+        {section.id === 'launch' && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.7, ease: EASE_OUT_EXPO }}
+            variants={textSnap}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
             className="mt-8"
           >
             <MagneticButton
@@ -123,6 +102,6 @@ export function SectionBlock({
           </motion.div>
         )}
       </div>
-    </section>
+    </motion.section>
   )
 }
