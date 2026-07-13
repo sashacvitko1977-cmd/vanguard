@@ -6,9 +6,9 @@ export function GlobalVideoBackground() {
         className="absolute left-1/2 top-1/2 max-w-none object-cover"
         style={{
           filter: 'brightness(0.68)',
-          objectPosition: '50% 42%',
-          width: '142%',
-          height: '142%',
+          objectPosition: '50% 40%',
+          width: '122%',
+          height: '122%',
           transform: 'translate(-50%, -50%)',
         }}
         src="/fonono.mp4"
