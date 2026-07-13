@@ -1,26 +1,28 @@
 import type { Variants } from 'framer-motion'
 
-const SMOOTH = { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const }
-const SMOOTH_UP = { duration: 0.85, ease: [0.22, 1, 0.36, 1] as const }
-const SMOOTH_FADE = { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const }
+const EASE_SOFT = [0.12, 1, 0.28, 1] as const
+
+const SMOOTH = { duration: 1.25, ease: EASE_SOFT }
+const SMOOTH_UP = { duration: 1.35, ease: EASE_SOFT }
+const SMOOTH_FADE = { duration: 1.4, ease: EASE_SOFT }
 
 const sectionSmoothLeft: Variants = {
-  hidden: { opacity: 0, x: -48, y: 28 },
+  hidden: { opacity: 0, x: -28, y: 16 },
   visible: { opacity: 1, x: 0, y: 0, transition: SMOOTH },
 }
 
 const sectionSmoothRight: Variants = {
-  hidden: { opacity: 0, x: 48, y: 28 },
+  hidden: { opacity: 0, x: 28, y: 16 },
   visible: { opacity: 1, x: 0, y: 0, transition: SMOOTH },
 }
 
 const sectionSmoothBottom: Variants = {
-  hidden: { opacity: 0, y: 56 },
+  hidden: { opacity: 0, y: 32 },
   visible: { opacity: 1, y: 0, transition: SMOOTH_UP },
 }
 
 const sectionSmoothFade: Variants = {
-  hidden: { opacity: 0, y: 40, scale: 0.98 },
+  hidden: { opacity: 0, y: 24, scale: 0.99 },
   visible: { opacity: 1, y: 0, scale: 1, transition: SMOOTH_FADE },
 }
 

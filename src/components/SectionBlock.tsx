@@ -66,7 +66,7 @@ export function SectionBlock({
           className={`absolute left-0 right-0 top-0 z-20 h-px ${impactLine} origin-left`}
           initial={{ scaleX: 0, opacity: 0 }}
           animate={inView ? { scaleX: 1, opacity: 0.45 } : { scaleX: 0, opacity: 0 }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          transition={{ duration: 1.4, ease: [0.12, 1, 0.28, 1], delay: 0.35 }}
         />
 
         <div
