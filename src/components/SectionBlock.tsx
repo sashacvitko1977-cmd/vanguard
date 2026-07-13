@@ -56,18 +56,17 @@ export function SectionBlock({
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
         variants={entrance}
-        className="scroll-section relative w-full border-t border-white/[0.06] will-change-transform"
+        className="scroll-section relative w-full border-t border-white/[0.06]"
         style={{
           transformOrigin: section.id === 'services' ? 'bottom center' : 'center center',
           backfaceVisibility: 'hidden',
         }}
       >
-        {/* Ударная линия при влёте */}
         <motion.div
-          className={`absolute left-0 right-0 top-0 z-20 h-[3px] ${impactLine} origin-left`}
+          className={`absolute left-0 right-0 top-0 z-20 h-px ${impactLine} origin-left`}
           initial={{ scaleX: 0, opacity: 0 }}
-          animate={inView ? { scaleX: 1, opacity: [0, 1, 0.6] } : { scaleX: 0, opacity: 0 }}
-          transition={{ duration: 0.12, ease: [1, 0, 0, 1] }}
+          animate={inView ? { scaleX: 1, opacity: 0.45 } : { scaleX: 0, opacity: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
         />
 
         <div

@@ -13,7 +13,7 @@ const brutal = { duration: 0.18, ease: SNAP_BRUTAL }
 const hard = { duration: 0.2, ease: SNAP_HARD }
 
 /** Триггер: влет в момент касания края viewport */
-export const sectionViewport = { once: true, margin: '-5% 0px -15% 0px', amount: 0.08 as const }
+export const sectionViewport = { once: true, margin: '-10% 0px -10% 0px', amount: 0.18 as const }
 export const textViewport = { once: true, margin: '0px 0px -6% 0px', amount: 0.25 as const }
 export const cardsViewport = { once: true, margin: '0px 0px -10% 0px', amount: 0.12 as const }
 
