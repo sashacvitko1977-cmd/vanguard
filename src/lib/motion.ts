@@ -13,7 +13,7 @@ const brutal = { duration: 0.18, ease: SNAP_BRUTAL }
 const hard = { duration: 0.2, ease: SNAP_HARD }
 
 /** Триггер: влет в момент касания края viewport */
-export const sectionViewport = { once: true, margin: '0px 0px -25% 0px', amount: 0.01 as const }
+export const sectionViewport = { once: true, margin: '-5% 0px -15% 0px', amount: 0.08 as const }
 export const textViewport = { once: true, margin: '0px 0px -6% 0px', amount: 0.25 as const }
 export const cardsViewport = { once: true, margin: '0px 0px -10% 0px', amount: 0.12 as const }
 
@@ -23,18 +23,18 @@ const SLAM_UP = { type: 'tween' as const, duration: 0.09, ease: [1, 0, 0, 1] as 
 const SLAM_VOID = { type: 'tween' as const, duration: 0.08, ease: [0.95, 0, 0.05, 1] as const }
 
 export const sectionFromLeft: Variants = {
-  hidden: { x: '-105vw', skewX: -5 },
-  visible: { x: 0, skewX: 0, transition: SLAM },
+  hidden: { x: '-105vw', skewX: -5, opacity: 1 },
+  visible: { x: 0, skewX: 0, opacity: 1, transition: SLAM },
 }
 
 export const sectionFromRight: Variants = {
-  hidden: { x: '105vw', skewX: 5 },
-  visible: { x: 0, skewX: 0, transition: SLAM },
+  hidden: { x: '105vw', skewX: 5, opacity: 1 },
+  visible: { x: 0, skewX: 0, opacity: 1, transition: SLAM },
 }
 
 export const sectionFromBottom: Variants = {
-  hidden: { y: '110vh' },
-  visible: { y: 0, transition: SLAM_UP },
+  hidden: { y: '110vh', opacity: 1 },
+  visible: { y: 0, opacity: 1, transition: SLAM_UP },
 }
 
 export const sectionFromVoid: Variants = {

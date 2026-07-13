@@ -6,6 +6,13 @@ import { getSectionEntrance } from '../lib/sectionMotion'
 import { FeatureCard } from './FeatureCard'
 import { LaunchBlock } from './LaunchBlock'
 
+const SECTION_SURFACE: Record<string, string> = {
+  projects: 'from-violet-950/15 via-black/10 to-transparent',
+  ecosystem: 'from-cyan-950/12 via-black/8 to-transparent',
+  services: 'from-amber-950/10 via-black/8 to-transparent',
+  launch: 'from-rose-950/12 via-black/8 to-transparent',
+}
+
 const SECTION_NUM: Record<string, string> = {
   projects: '01',
   ecosystem: '02',
@@ -34,6 +41,7 @@ export function SectionBlock({
   const inView = useInView(ref, sectionViewport)
   const entrance = getSectionEntrance(section.id)
   const isProjects = section.id === 'projects'
+  const surface = SECTION_SURFACE[section.id] ?? SECTION_SURFACE.projects
   const sectionNum = SECTION_NUM[section.id] ?? '00'
   const impactLine = IMPACT_LINE[section.id] ?? 'bg-violet-400'
 
@@ -42,9 +50,8 @@ export function SectionBlock({
     : 'mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
 
   return (
-    <div className="overflow-x-clip">
+    <div ref={ref} className="overflow-x-clip">
       <motion.section
-        ref={ref}
         id={section.id}
         initial="hidden"
         animate={inView ? 'visible' : 'hidden'}
@@ -61,6 +68,11 @@ export function SectionBlock({
           initial={{ scaleX: 0, opacity: 0 }}
           animate={inView ? { scaleX: 1, opacity: [0, 1, 0.6] } : { scaleX: 0, opacity: 0 }}
           transition={{ duration: 0.12, ease: [1, 0, 0, 1] }}
+        />
+
+        <div
+          className={`pointer-events-none absolute inset-0 bg-gradient-to-b ${surface}`}
+          aria-hidden="true"
         />
 
         <div className="relative px-6 py-24 sm:px-10 lg:px-16">
