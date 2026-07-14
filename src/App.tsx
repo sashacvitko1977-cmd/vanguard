@@ -6,16 +6,11 @@ import { Footer } from './components/Footer'
 import { MobileMenu } from './components/MobileMenu'
 import { WalletModal } from './components/WalletModal'
 import { Toast } from './components/Toast'
-import { ScrollProgress } from './components/ScrollProgress'
 import { BackToTop } from './components/BackToTop'
-import { CustomCursor } from './components/CustomCursor'
 import { GlobalVideoBackground } from './components/GlobalVideoBackground'
-import { RainOverlay } from './components/RainOverlay'
-import { useReducedEffects } from './hooks/useReducedEffects'
 import { SECTIONS } from './lib/data'
 
 export default function App() {
-  const reducedEffects = useReducedEffects()
   const [menuOpen, setMenuOpen] = useState(false)
   const [walletOpen, setWalletOpen] = useState(false)
   const [toast, setToast] = useState('')
@@ -44,10 +39,8 @@ export default function App() {
   return (
     <>
       <GlobalVideoBackground />
-      <RainOverlay />
       <div className="grain-overlay" aria-hidden="true" />
-      <CustomCursor />
-      {!reducedEffects && <ScrollProgress />}
+      <div className="vanguard-pattern pointer-events-none fixed inset-0 z-[1]" aria-hidden="true" />
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
       <main className="relative z-10">
         <Hero />

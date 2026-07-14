@@ -37,7 +37,6 @@
     background: var(--void);
     min-height: 100%;
     min-height: 100dvh;
-    cursor: none;
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
   }
@@ -48,12 +47,6 @@
     min-height: 100dvh;
     overflow-x: clip;
     isolation: isolate;
-  }
-
-  @media (hover: none), (pointer: coarse) {
-    body {
-      cursor: auto;
-    }
   }
 
   ::-webkit-scrollbar {
@@ -91,18 +84,9 @@
   text-wrap: balance;
 }
 
-/* ——— Rain overlay ——— */
-.rain-overlay {
-  opacity: 0.42;
-}
-
 @media (hover: none), (pointer: coarse) {
-  .rain-overlay {
-    opacity: 0.32;
-  }
-
   .grain-overlay {
-    opacity: 0.018;
+    opacity: 0.022;
   }
 
   .video-bg {
@@ -110,10 +94,6 @@
   }
 
   .section-glow {
-    display: none;
-  }
-
-  .progress-bar {
     display: none;
   }
 }
@@ -131,13 +111,42 @@
   background-color: var(--void);
 }
 
+/* ——— VANGUARD brand slash ——— */
+.brand-slash {
+  transform: skewX(-12deg);
+  border-radius: 1px;
+  background: linear-gradient(180deg, #c41e3a 0%, #8b5cf6 55%, #6d28d9 100%);
+  box-shadow: 0 0 14px rgba(196, 30, 58, 0.28);
+}
+
+/* ——— VANGUARD diagonal pattern ——— */
+.vanguard-pattern {
+  opacity: 0.45;
+  background-image:
+    repeating-linear-gradient(
+      -12deg,
+      transparent,
+      transparent 72px,
+      rgba(139, 92, 246, 0.025) 72px,
+      rgba(139, 92, 246, 0.025) 73px
+    ),
+    repeating-linear-gradient(
+      -12deg,
+      transparent,
+      transparent 144px,
+      rgba(196, 30, 58, 0.012) 144px,
+      rgba(196, 30, 58, 0.012) 145px
+    );
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 75%);
+}
+
 /* ——— Film grain ——— */
 .grain-overlay {
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 9998;
-  opacity: 0.035;
+  z-index: 2;
+  opacity: 0.03;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
@@ -153,15 +162,14 @@
 /* ——— Neon / signal ——— */
 .neon-glow {
   text-shadow:
-    0 0 20px rgba(255, 255, 255, 0.15),
-    0 0 40px rgba(139, 92, 246, 0.1);
+    0 0 14px rgba(255, 255, 255, 0.08),
+    0 0 28px rgba(139, 92, 246, 0.06);
 }
 
 .blood-glow {
   text-shadow:
-    0 0 18px rgba(196, 30, 58, 0.55),
-    0 0 36px rgba(127, 29, 29, 0.35),
-    0 0 60px rgba(69, 10, 10, 0.2);
+    0 0 14px rgba(196, 30, 58, 0.35),
+    0 0 28px rgba(127, 29, 29, 0.18);
 }
 
 .neon-border {
@@ -175,7 +183,7 @@
 }
 
 .shadow-neon {
-  box-shadow: 0 0 24px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 16px rgba(139, 92, 246, 0.12);
 }
 
 /* ——— Card shell ——— */

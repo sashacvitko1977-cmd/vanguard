@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { NAV_LINKS } from '../lib/data'
+import { BrandSlash } from './BrandSlash'
 import { MagneticButton } from './MagneticButton'
 
 type Props = {
@@ -30,9 +31,10 @@ export function Header({ onWallet, onMenuOpen }: Props) {
         <motion.a
           href="#top"
           data-cursor-hover
-          className="font-display text-xl font-bold uppercase tracking-wider text-white neon-glow sm:text-2xl"
+          className="flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wider text-white neon-glow sm:text-2xl"
           whileHover={{ scale: 1.02 }}
         >
+          <BrandSlash size="md" />
           VANGUARD
         </motion.a>
 

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { NAV_LINKS } from '../lib/data'
+import { BrandSlash } from './BrandSlash'
 import { snapFadeUp, staggerTight, textViewport, SNAP_HARD } from '../lib/motion'
 
 const linkStagger = {
@@ -45,7 +46,8 @@ export function Footer() {
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
           <motion.div variants={snapFadeUp}>
-            <a href="#top" data-cursor-hover className="font-display text-xl font-bold uppercase tracking-wider text-white neon-glow">
+            <a href="#top" data-cursor-hover className="inline-flex items-center gap-2.5 font-display text-xl font-bold uppercase tracking-wider text-white neon-glow">
+              <BrandSlash size="md" />
               VANGUARD
             </a>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-white/50">

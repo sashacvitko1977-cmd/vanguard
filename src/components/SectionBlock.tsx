@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion'
 import type { SectionData } from '../lib/data'
 import { sectionViewport } from '../lib/motion'
 import { getSectionEntrance } from '../lib/sectionMotion'
+import { BrandSlash } from './BrandSlash'
 import { FeatureCard } from './FeatureCard'
 import { LaunchBlock } from './LaunchBlock'
 
@@ -67,8 +68,8 @@ export function SectionBlock({
         <motion.div
           className={`absolute left-0 right-0 top-0 z-20 h-px ${impactLine} origin-left`}
           initial={{ scaleX: 0, opacity: 0 }}
-          animate={inView ? { scaleX: 1, opacity: 0.45 } : { scaleX: 0, opacity: 0 }}
-          transition={{ duration: 1.4, ease: [0.12, 1, 0.28, 1], delay: 0.35 }}
+          animate={inView ? { scaleX: 1, opacity: 0.28 } : { scaleX: 0, opacity: 0 }}
+          transition={{ duration: 0.9, ease: [0.12, 1, 0.28, 1], delay: 0.2 }}
         />
 
         <div
@@ -88,6 +89,7 @@ export function SectionBlock({
                 </span>
 
                 <div className="mb-3 flex items-center gap-3">
+                  <BrandSlash size="sm" />
                   <span className="font-display text-sm text-violet-400/80">{sectionNum}</span>
                   <span className="h-px w-8 bg-violet-500/40" />
                   <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-[10px] uppercase tracking-[0.18em] text-white/50">

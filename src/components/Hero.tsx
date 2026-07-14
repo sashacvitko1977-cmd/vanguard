@@ -1,27 +1,21 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { useReducedEffects } from '../hooks/useReducedEffects'
+import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { HEADLINES, STATS } from '../lib/data'
 import { SNAP_HARD } from '../lib/motion'
+import { BrandSlash } from './BrandSlash'
 import { CountUp } from './CountUp'
 import { MagneticButton } from './MagneticButton'
 import { TextReveal } from './TextReveal'
-import { CharReveal } from './CharReveal'
 
 export function Hero() {
-  const reducedEffects = useReducedEffects()
-  const { scrollY } = useScroll()
-  const contentY = useTransform(scrollY, [0, 700], reducedEffects ? [0, 0] : [0, -60])
-  const contentOpacity = useTransform(scrollY, [0, 500, 900], reducedEffects ? [1, 1, 1] : [1, 0.75, 0.35])
-
-  let charDelay = 0.15
-
   return (
-    <section id="top" className="relative min-h-screen">
-      <motion.div
-        className="relative z-10 flex min-h-screen flex-col justify-center px-6 pb-20 pt-28 sm:px-10 lg:px-16"
-        style={{ y: contentY, opacity: contentOpacity }}
-      >
+    <section id="top" className="relative min-h-screen overflow-hidden">
+      <BrandSlash
+        size="xl"
+        className="pointer-events-none absolute -right-4 top-1/3 hidden opacity-25 sm:block lg:right-[8%] lg:opacity-35"
+      />
+
+      <div className="relative z-10 flex min-h-screen flex-col justify-center px-6 pb-20 pt-28 sm:px-10 lg:px-16">
         <div className="mx-auto w-full max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -29,6 +23,7 @@ export function Hero() {
             transition={{ duration: 0.4, ease: SNAP_HARD }}
             className="mb-6 inline-flex items-center gap-3"
           >
+            <BrandSlash size="sm" />
             <span className="font-display text-xs text-violet-400/70">00</span>
             <span className="h-px w-6 bg-violet-500/50" />
             <span className="rounded-full border border-white/10 bg-black/20 px-4 py-1.5 font-inter text-[10px] uppercase tracking-[0.22em] text-white/50">
@@ -37,22 +32,25 @@ export function Hero() {
           </motion.div>
 
           <h1 className="font-display uppercase leading-[0.92] text-white">
-            {HEADLINES.map((line, lineIdx) => {
-              const delay = charDelay
-              charDelay += line.length * 0.038 + 0.1
-              return (
-                <span
-                  key={line}
-                  className={`block text-[clamp(2rem,6vw,4.5rem)] ${
-                    lineIdx === 2
-                      ? 'blood-glow text-[#c41e3a]'
-                      : `neon-glow ${lineIdx === 1 ? 'text-white/90' : 'text-white'}`
-                  }`}
-                >
-                  <CharReveal text={line} delay={delay} stagger={0.038} />
-                </span>
-              )
-            })}
+            {HEADLINES.map((line, lineIdx) => (
+              <motion.span
+                key={line}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.55,
+                  delay: 0.15 + lineIdx * 0.16,
+                  ease: SNAP_HARD,
+                }}
+                className={`block overflow-hidden text-[clamp(2rem,6vw,4.5rem)] ${
+                  lineIdx === 2
+                    ? 'blood-glow text-[#c41e3a]'
+                    : `neon-glow ${lineIdx === 1 ? 'text-white/90' : 'text-white'}`
+                }`}
+              >
+                {line}
+              </motion.span>
+            ))}
           </h1>
 
           <motion.div
@@ -100,7 +98,6 @@ export function Hero() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.05 + i * 0.07, duration: 0.35, ease: SNAP_HARD }}
-                whileHover={{ y: -3 }}
                 className="group"
               >
                 <div className="font-display text-3xl text-white transition-colors group-hover:text-violet-200">
@@ -113,7 +110,7 @@ export function Hero() {
             ))}
           </motion.div>
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }
