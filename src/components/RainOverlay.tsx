@@ -123,36 +123,36 @@ export function RainOverlay() {
 
     const createDrop = (randomY = false): Drop => {
       const z = Math.random()
-      const heavy = Math.random() < 0.14
+      const heavy = Math.random() < 0.05
       const depth = 0.35 + z * 0.65
 
       return {
         x: Math.random() * w,
         y: randomY ? -20 - Math.random() * h : -20 - Math.random() * 140,
         z,
-        speed: (heavy ? 20 : 12) + depth * 18 + Math.random() * 8,
-        length: (heavy ? 22 : 12) + depth * 26 + Math.random() * 14,
-        width: heavy ? 1.2 + Math.random() * 0.7 : 0.35 + depth * 0.75,
-        opacity: heavy ? 0.5 + Math.random() * 0.3 : 0.14 + depth * 0.38,
+        speed: (heavy ? 18 : 12) + depth * 16 + Math.random() * 6,
+        length: (heavy ? 18 : 10) + depth * 20 + Math.random() * 10,
+        width: heavy ? 0.7 + Math.random() * 0.4 : 0.25 + depth * 0.45,
+        opacity: heavy ? 0.22 + Math.random() * 0.12 : 0.06 + depth * 0.16,
         wind: (Math.random() - 0.5) * WIND_DRIFT,
         heavy,
       }
     }
 
-    const createImpactDrop = (heavy = Math.random() < 0.22): ImpactDrop => ({
+    const createImpactDrop = (heavy = Math.random() < 0.08): ImpactDrop => ({
       x: Math.random() * w,
       y: -20 - Math.random() * 180,
       impactY: h * (0.1 + Math.random() * 0.82),
-      speed: (heavy ? 18 : 11) + Math.random() * 12,
-      length: (heavy ? 22 : 14) + Math.random() * 20,
-      width: heavy ? 1.1 + Math.random() * 0.9 : 0.55 + Math.random() * 0.65,
-      opacity: heavy ? 0.55 + Math.random() * 0.35 : 0.32 + Math.random() * 0.38,
+      speed: (heavy ? 16 : 11) + Math.random() * 10,
+      length: (heavy ? 18 : 12) + Math.random() * 14,
+      width: heavy ? 0.65 + Math.random() * 0.45 : 0.35 + Math.random() * 0.35,
+      opacity: heavy ? 0.24 + Math.random() * 0.14 : 0.12 + Math.random() * 0.14,
       wind: (Math.random() - 0.5) * WIND_DRIFT,
       heavy,
     })
 
     const spawnScreenSplash = (x: number, y: number, heavy: boolean) => {
-      const intensity = heavy ? 1.2 + Math.random() * 0.5 : 0.75 + Math.random() * 0.45
+      const intensity = heavy ? 0.55 + Math.random() * 0.25 : 0.35 + Math.random() * 0.2
       const rayCount = heavy ? 14 + Math.floor(Math.random() * 8) : 9 + Math.floor(Math.random() * 6)
 
       const rays = Array.from({ length: rayCount }, (_, i) => ({
@@ -184,9 +184,9 @@ export function RainOverlay() {
         radius: heavy ? 3 + Math.random() * 4 : 2 + Math.random() * 2.5,
         flash: 1,
         rings: [
-          { radius: 0, opacity: 0.7, width: heavy ? 2 : 1.2 },
-          { radius: 0, opacity: 0.45, width: 1 },
-          { radius: 0, opacity: 0.25, width: 0.6 },
+          { radius: 0, opacity: 0.28, width: heavy ? 1.2 : 0.8 },
+          { radius: 0, opacity: 0.18, width: 0.7 },
+          { radius: 0, opacity: 0.1, width: 0.4 },
         ],
         rays,
         smears,
@@ -263,10 +263,10 @@ export function RainOverlay() {
       const tailY = y - d.length
 
       const grad = ctx.createLinearGradient(tailX, tailY, x, y)
-      grad.addColorStop(0, `rgba(160, 185, 220, 0)`)
-      grad.addColorStop(0.45, `rgba(190, 210, 235, ${d.opacity * 0.25})`)
-      grad.addColorStop(0.85, `rgba(215, 230, 250, ${d.opacity * 0.75})`)
-      grad.addColorStop(1, `rgba(240, 248, 255, ${Math.min(d.opacity * 1.1, 0.95)})`)
+      grad.addColorStop(0, `rgba(70, 78, 105, 0)`)
+      grad.addColorStop(0.5, `rgba(95, 105, 135, ${d.opacity * 0.35})`)
+      grad.addColorStop(0.9, `rgba(115, 125, 155, ${d.opacity * 0.55})`)
+      grad.addColorStop(1, `rgba(130, 140, 168, ${Math.min(d.opacity * 0.65, 0.35)})`)
 
       ctx.beginPath()
       ctx.strokeStyle = grad
@@ -278,8 +278,8 @@ export function RainOverlay() {
 
       if (d.heavy) {
         ctx.beginPath()
-        ctx.fillStyle = `rgba(235, 245, 255, ${d.opacity * 0.5})`
-        ctx.arc(x, y, d.width * 0.6, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(120, 130, 158, ${d.opacity * 0.35})`
+        ctx.arc(x, y, d.width * 0.45, 0, Math.PI * 2)
         ctx.fill()
       }
     }
@@ -289,10 +289,10 @@ export function RainOverlay() {
       const tailY = y - d.length
 
       const grad = ctx.createLinearGradient(tailX, tailY, x, y)
-      grad.addColorStop(0, `rgba(170, 195, 225, 0)`)
-      grad.addColorStop(0.4, `rgba(200, 220, 245, ${d.opacity * 0.3})`)
-      grad.addColorStop(0.85, `rgba(225, 238, 252, ${d.opacity * 0.8})`)
-      grad.addColorStop(1, `rgba(245, 250, 255, ${Math.min(d.opacity * 1.15, 0.98)})`)
+      grad.addColorStop(0, `rgba(75, 82, 108, 0)`)
+      grad.addColorStop(0.45, `rgba(100, 110, 140, ${d.opacity * 0.3})`)
+      grad.addColorStop(0.9, `rgba(118, 128, 158, ${d.opacity * 0.5})`)
+      grad.addColorStop(1, `rgba(132, 142, 170, ${Math.min(d.opacity * 0.6, 0.32)})`)
 
       ctx.beginPath()
       ctx.strokeStyle = grad
@@ -304,8 +304,8 @@ export function RainOverlay() {
 
       if (d.heavy) {
         ctx.beginPath()
-        ctx.fillStyle = `rgba(240, 248, 255, ${d.opacity * 0.55})`
-        ctx.arc(x, y, d.width * 0.65, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(125, 135, 162, ${d.opacity * 0.3})`
+        ctx.arc(x, y, d.width * 0.45, 0, Math.PI * 2)
         ctx.fill()
       }
     }
@@ -315,10 +315,10 @@ export function RainOverlay() {
       const alpha = fade * fade * s.intensity
 
       if (s.flash > 0.05) {
-        const flashGrad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 18 + s.intensity * 14)
-        flashGrad.addColorStop(0, `rgba(255, 255, 255, ${s.flash * 0.55})`)
-        flashGrad.addColorStop(0.35, `rgba(220, 235, 255, ${s.flash * 0.2})`)
-        flashGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+        const flashGrad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, 14 + s.intensity * 10)
+        flashGrad.addColorStop(0, `rgba(140, 150, 180, ${s.flash * 0.18})`)
+        flashGrad.addColorStop(0.35, `rgba(110, 120, 150, ${s.flash * 0.08})`)
+        flashGrad.addColorStop(1, `rgba(90, 100, 130, 0)`)
         ctx.beginPath()
         ctx.fillStyle = flashGrad
         ctx.arc(s.x, s.y, 18 + s.intensity * 14, 0, Math.PI * 2)
@@ -326,7 +326,7 @@ export function RainOverlay() {
       }
 
       ctx.beginPath()
-      ctx.fillStyle = `rgba(245, 250, 255, ${alpha * 0.65})`
+      ctx.fillStyle = `rgba(115, 125, 155, ${alpha * 0.28})`
       ctx.arc(s.x, s.y, s.radius * (0.6 + (1 - fade) * 0.5), 0, Math.PI * 2)
       ctx.fill()
 
@@ -335,8 +335,8 @@ export function RainOverlay() {
         const ex = s.x + Math.cos(smear.angle) * len
         const ey = s.y + Math.sin(smear.angle) * len
         const smearGrad = ctx.createLinearGradient(s.x, s.y, ex, ey)
-        smearGrad.addColorStop(0, `rgba(230, 242, 255, ${smear.opacity * alpha * 0.8})`)
-        smearGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+        smearGrad.addColorStop(0, `rgba(105, 115, 145, ${smear.opacity * alpha * 0.35})`)
+        smearGrad.addColorStop(1, `rgba(85, 95, 125, 0)`)
         ctx.beginPath()
         ctx.strokeStyle = smearGrad
         ctx.lineWidth = 1.5 + fade
@@ -352,9 +352,9 @@ export function RainOverlay() {
         const ey = s.y + Math.sin(ray.angle) * len
 
         const rayGrad = ctx.createLinearGradient(s.x, s.y, ex, ey)
-        rayGrad.addColorStop(0, `rgba(245, 250, 255, ${alpha * 0.9})`)
-        rayGrad.addColorStop(0.4, `rgba(230, 242, 255, ${alpha * 0.5})`)
-        rayGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+        rayGrad.addColorStop(0, `rgba(120, 130, 160, ${alpha * 0.35})`)
+        rayGrad.addColorStop(0.4, `rgba(100, 110, 140, ${alpha * 0.2})`)
+        rayGrad.addColorStop(1, `rgba(80, 90, 120, 0)`)
 
         ctx.beginPath()
         ctx.strokeStyle = rayGrad
@@ -368,7 +368,7 @@ export function RainOverlay() {
       for (const ring of s.rings) {
         if (ring.opacity < 0.03) continue
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(210, 230, 250, ${ring.opacity * alpha})`
+        ctx.strokeStyle = `rgba(100, 110, 140, ${ring.opacity * alpha * 0.45})`
         ctx.lineWidth = ring.width
         ctx.ellipse(s.x, s.y, ring.radius, ring.radius * 0.32, 0, 0, Math.PI * 2)
         ctx.stroke()
@@ -378,7 +378,7 @@ export function RainOverlay() {
         if (p.life <= 0) continue
         const pAlpha = p.opacity * p.life * alpha
         ctx.beginPath()
-        ctx.fillStyle = `rgba(235, 245, 255, ${pAlpha})`
+        ctx.fillStyle = `rgba(110, 120, 150, ${pAlpha * 0.5})`
         ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2)
         ctx.fill()
       }
@@ -386,9 +386,9 @@ export function RainOverlay() {
       for (const bead of s.beads) {
         const beadAlpha = bead.opacity * bead.life * alpha
         const slideGrad = ctx.createLinearGradient(s.x, s.y, s.x + bead.driftX, s.y + bead.y)
-        slideGrad.addColorStop(0, `rgba(225, 238, 252, ${beadAlpha * 0.85})`)
-        slideGrad.addColorStop(0.6, `rgba(210, 228, 248, ${beadAlpha * 0.45})`)
-        slideGrad.addColorStop(1, `rgba(200, 220, 245, 0)`)
+        slideGrad.addColorStop(0, `rgba(105, 115, 145, ${beadAlpha * 0.4})`)
+        slideGrad.addColorStop(0.6, `rgba(90, 100, 130, ${beadAlpha * 0.22})`)
+        slideGrad.addColorStop(1, `rgba(75, 85, 115, 0)`)
 
         ctx.beginPath()
         ctx.strokeStyle = slideGrad
@@ -399,7 +399,7 @@ export function RainOverlay() {
         ctx.stroke()
 
         ctx.beginPath()
-        ctx.fillStyle = `rgba(240, 248, 255, ${beadAlpha * 0.7})`
+        ctx.fillStyle = `rgba(115, 125, 155, ${beadAlpha * 0.3})`
         ctx.ellipse(s.x + bead.driftX * 0.5, s.y + bead.y, bead.width * 1.2, bead.width * 1.6, 0, 0, Math.PI * 2)
         ctx.fill()
       }
@@ -452,7 +452,7 @@ export function RainOverlay() {
         if (r.life <= 0 || r.opacity < 0.02) return false
 
         ctx.beginPath()
-        ctx.strokeStyle = `rgba(200, 220, 245, ${r.opacity})`
+        ctx.strokeStyle = `rgba(90, 100, 130, ${r.opacity * 0.4})`
         ctx.lineWidth = r.heavy ? 1.1 : 0.6
         ctx.ellipse(r.x, r.y, r.radius, r.radius * 0.28, 0, 0, Math.PI * 2)
         ctx.stroke()

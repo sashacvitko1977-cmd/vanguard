@@ -93,12 +93,12 @@
 
 /* ——— Rain overlay ——— */
 .rain-overlay {
-  opacity: 0.82;
+  opacity: 0.42;
 }
 
 @media (hover: none), (pointer: coarse) {
   .rain-overlay {
-    opacity: 0.55;
+    opacity: 0.32;
   }
 
   .grain-overlay {
