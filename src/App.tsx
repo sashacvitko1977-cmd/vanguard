@@ -44,8 +44,8 @@ export default function App() {
   return (
     <>
       <GlobalVideoBackground />
-      {!reducedEffects && <RainOverlay />}
-      {!reducedEffects && <div className="grain-overlay" aria-hidden="true" />}
+      <RainOverlay />
+      <div className="grain-overlay" aria-hidden="true" />
       <CustomCursor />
       {!reducedEffects && <ScrollProgress />}
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />

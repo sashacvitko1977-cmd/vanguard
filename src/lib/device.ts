@@ -1,11 +1,14 @@
-/** Non-hook check for canvas / video effects */
-export function shouldReduceEffects() {
-  if (typeof window === 'undefined') return true
+/** Skip canvas effects only when user prefers reduced motion or save-data */
+export function shouldSkipAmbientEffects() {
+  if (typeof window === 'undefined') return false
 
-  const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches
-  const narrow = window.matchMedia('(max-width: 768px)').matches
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
 
-  return coarse || narrow || reducedMotion || conn?.saveData === true
+  return reducedMotion || conn?.saveData === true
+}
+
+export function isTouchDevice() {
+  if (typeof window === 'undefined') return false
+  return window.matchMedia('(hover: none), (pointer: coarse)').matches
 }

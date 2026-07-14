@@ -98,11 +98,15 @@
 
 @media (hover: none), (pointer: coarse) {
   .rain-overlay {
-    display: none !important;
+    opacity: 0.55;
   }
 
   .grain-overlay {
-    display: none !important;
+    opacity: 0.018;
+  }
+
+  .video-bg {
+    filter: brightness(0.62) !important;
   }
 
   .section-glow {

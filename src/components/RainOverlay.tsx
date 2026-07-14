@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { shouldReduceEffects } from '../lib/device'
+import { isTouchDevice, shouldSkipAmbientEffects } from '../lib/device'
 
 type Drop = {
   x: number
@@ -102,23 +102,23 @@ export function RainOverlay() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    if (shouldReduceEffects()) return
+    if (shouldSkipAmbientEffects()) return
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches
-    if (reduced) return
+    const coarse = isTouchDevice()
 
     let w = 0
     let h = 0
 
+    const dpr = Math.min(window.devicePixelRatio || 1, coarse ? 1.25 : 2)
+
     const resize = () => {
       w = window.innerWidth
       h = window.innerHeight
-      canvas.width = Math.floor(w * devicePixelRatio)
-      canvas.height = Math.floor(h * devicePixelRatio)
+      canvas.width = Math.floor(w * dpr)
+      canvas.height = Math.floor(h * dpr)
       canvas.style.width = `${w}px`
       canvas.style.height = `${h}px`
-      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     }
 
     const createDrop = (randomY = false): Drop => {
@@ -509,7 +509,7 @@ export function RainOverlay() {
     }
   }, [])
 
-  if (shouldReduceEffects()) return null
+  if (shouldSkipAmbientEffects()) return null
 
   return (
     <canvas

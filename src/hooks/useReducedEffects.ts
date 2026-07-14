@@ -1,33 +1,26 @@
 import { useEffect, useState } from 'react'
 
-function detectReducedEffects() {
-  if (typeof window === 'undefined') return true
+function detectReducedMotion() {
+  if (typeof window === 'undefined') return false
 
-  const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches
-  const narrow = window.matchMedia('(max-width: 768px)').matches
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
   const saveData = conn?.saveData === true
 
-  return coarse || narrow || reducedMotion || saveData
+  return reducedMotion || saveData
 }
 
-/** Touch / low-power devices — skip heavy canvas, video, parallax */
+/** Only heavy scroll/animation effects — video & rain stay enabled on mobile */
 export function useReducedEffects() {
-  const [reduced, setReduced] = useState(detectReducedEffects)
+  const [reduced, setReduced] = useState(detectReducedMotion)
 
   useEffect(() => {
-    const coarse = window.matchMedia('(hover: none), (pointer: coarse)')
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
-    const update = () => setReduced(detectReducedEffects())
+    const update = () => setReduced(detectReducedMotion())
 
-    coarse.addEventListener('change', update)
     reducedMotion.addEventListener('change', update)
-    return () => {
-      coarse.removeEventListener('change', update)
-      reducedMotion.removeEventListener('change', update)
-    }
+    return () => reducedMotion.removeEventListener('change', update)
   }, [])
 
   return reduced
