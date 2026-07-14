@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { SNAP_HARD } from '../lib/motion'
+import { useReducedEffects } from '../hooks/useReducedEffects'
 
 type Props = {
   text: string
@@ -17,7 +18,16 @@ export function CharReveal({
   stagger = 0.04,
   as: Tag = 'span',
 }: Props) {
+  const reducedEffects = useReducedEffects()
   const chars = [...text]
+
+  if (reducedEffects) {
+    return (
+      <Tag className={className} aria-label={text}>
+        {text}
+      </Tag>
+    )
+  }
 
   return (
     <Tag className={className} aria-label={text}>
@@ -25,10 +35,10 @@ export function CharReveal({
         <motion.span
           key={`${char}-${i}`}
           className="inline-block"
-          initial={{ opacity: 0, y: 18, filter: 'blur(8px)', scale: 0.92 }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)', scale: 1 }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{
-            duration: 0.32,
+            duration: 0.28,
             delay: delay + i * stagger,
             ease: SNAP_HARD,
           }}

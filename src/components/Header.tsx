@@ -21,7 +21,9 @@ export function Header({ onWallet, onMenuOpen }: Props) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.1 }}
       className={`fixed top-0 left-0 right-0 z-40 px-6 py-5 transition-colors duration-500 sm:px-10 lg:px-16 lg:py-6 ${
-        scrolled ? 'border-b border-white/8 bg-black/75 backdrop-blur-xl' : 'bg-transparent'
+        scrolled
+          ? 'border-b border-white/8 bg-black/85 max-md:backdrop-blur-none md:bg-black/75 md:backdrop-blur-xl'
+          : 'bg-transparent'
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between">

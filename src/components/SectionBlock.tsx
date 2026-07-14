@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useReducedEffects } from '../hooks/useReducedEffects'
 import { motion, useInView } from 'framer-motion'
 import type { SectionData } from '../lib/data'
 import { sectionViewport } from '../lib/motion'
@@ -37,9 +38,10 @@ export function SectionBlock({
   onWallet?: () => void
   onLeadSubmit?: (data: { name: string; contact: string }) => void
 }) {
+  const reducedEffects = useReducedEffects()
   const ref = useRef<HTMLElement>(null)
   const inView = useInView(ref, sectionViewport)
-  const entrance = getSectionEntrance(section.id)
+  const entrance = getSectionEntrance(section.id, reducedEffects)
   const isProjects = section.id === 'projects'
   const surface = SECTION_SURFACE[section.id] ?? SECTION_SURFACE.projects
   const sectionNum = SECTION_NUM[section.id] ?? '00'

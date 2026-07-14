@@ -1,4 +1,5 @@
 import { useRef, type MouseEvent } from 'react'
+import { useReducedEffects } from '../hooks/useReducedEffects'
 import { motion, type Variants } from 'framer-motion'
 import type { CardData } from '../lib/data'
 import { ArrowUpRight } from 'lucide-react'
@@ -65,6 +66,8 @@ type Props = {
 }
 
 export function FeatureCard({ card, variants, tilt = false, index, className = '' }: Props) {
+  const reducedEffects = useReducedEffects()
+  const enableTilt = tilt && !reducedEffects
   const a = accentMap[card.accent]
   const Icon = card.icon
   const ref = useRef<HTMLElement>(null)
@@ -74,7 +77,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
 
   const applyTilt = () => {
     const el = ref.current
-    if (!el || !tilt) return
+    if (!el || !enableTilt) return
     const { x, y } = tiltRef.current
     el.style.transform = `perspective(1000px) rotateX(${y}deg) rotateY(${x}deg) scale3d(1.01, 1.01, 1.01)`
   }
@@ -93,7 +96,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
       glow.style.opacity = '1'
     }
 
-    if (tilt) {
+    if (enableTilt) {
       tiltRef.current = {
         x: Math.max(-7, Math.min(7, (px - 0.5) * 16)),
         y: Math.max(-6, Math.min(6, (0.5 - py) * 12)),
@@ -107,7 +110,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
     const el = ref.current
     const glow = glowRef.current
     if (glow) glow.style.opacity = '0'
-    if (el && tilt) {
+    if (el && enableTilt) {
       tiltRef.current = { x: 0, y: 0 }
       el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)'
     }
@@ -121,7 +124,7 @@ export function FeatureCard({ card, variants, tilt = false, index, className = '
       onMouseLeave={handleLeave}
       data-cursor-hover
       className={`group relative ${a.ring} ${className}`}
-      style={{ transformStyle: 'preserve-3d', willChange: tilt ? 'transform' : undefined }}
+      style={{ transformStyle: enableTilt ? 'preserve-3d' : undefined, willChange: enableTilt ? 'transform' : undefined }}
     >
       <div className="card-shell relative overflow-hidden">
         <div

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { shouldReduceEffects } from '../lib/device'
 
 type Drop = {
   x: number
@@ -86,7 +87,7 @@ const createSplashParticles = (x: number, y: number, intensity: number, count: n
   return particles
 }
 
-/** Реалистичный дождь + удары о «стекло» экрана */
+/** Реалистичный дождь + удары о «стекло» экрана (только десктоп) */
 export function RainOverlay() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const dropsRef = useRef<Drop[]>([])
@@ -100,6 +101,8 @@ export function RainOverlay() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
+
+    if (shouldReduceEffects()) return
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches
@@ -505,6 +508,8 @@ export function RainOverlay() {
       window.removeEventListener('resize', resize)
     }
   }, [])
+
+  if (shouldReduceEffects()) return null
 
   return (
     <canvas

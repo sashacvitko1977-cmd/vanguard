@@ -1,4 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { useReducedEffects } from '../hooks/useReducedEffects'
 import { ArrowUpRight } from 'lucide-react'
 import { HEADLINES, STATS } from '../lib/data'
 import { SNAP_HARD } from '../lib/motion'
@@ -8,9 +9,10 @@ import { TextReveal } from './TextReveal'
 import { CharReveal } from './CharReveal'
 
 export function Hero() {
+  const reducedEffects = useReducedEffects()
   const { scrollY } = useScroll()
-  const contentY = useTransform(scrollY, [0, 700], [0, -60])
-  const contentOpacity = useTransform(scrollY, [0, 500, 900], [1, 0.75, 0.35])
+  const contentY = useTransform(scrollY, [0, 700], reducedEffects ? [0, 0] : [0, -60])
+  const contentOpacity = useTransform(scrollY, [0, 500, 900], reducedEffects ? [1, 1, 1] : [1, 0.75, 0.35])
 
   let charDelay = 0.15
 

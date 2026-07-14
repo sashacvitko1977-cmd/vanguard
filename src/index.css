@@ -17,15 +17,35 @@
   html {
     @apply scroll-smooth antialiased;
     scroll-padding-top: 5rem;
-    scrollbar-gutter: stable;
     scrollbar-width: thin;
     scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
+    background: var(--void);
+    overflow-x: clip;
+    overscroll-behavior: none;
+  }
+
+  @media (min-width: 768px) {
+    html {
+      scrollbar-gutter: stable;
+    }
   }
 
   body {
-    @apply m-0 overflow-x-hidden font-inter text-white;
-    background: transparent;
+    @apply m-0 overflow-x-clip font-inter text-white;
+    background: var(--void);
+    min-height: 100%;
+    min-height: 100dvh;
     cursor: none;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #root {
+    background: var(--void);
+    min-height: 100%;
+    min-height: 100dvh;
+    overflow-x: clip;
+    isolation: isolate;
   }
 
   @media (hover: none), (pointer: coarse) {
@@ -76,7 +96,15 @@
 
 @media (hover: none), (pointer: coarse) {
   .rain-overlay {
-    opacity: 0.65;
+    display: none;
+  }
+
+  .grain-overlay {
+    display: none;
+  }
+
+  .section-glow {
+    display: none;
   }
 }
 
@@ -177,7 +205,7 @@
     opacity: 1;
   }
   100% {
-    transform: translateX(100vw);
+    transform: translateX(100%);
     opacity: 0;
   }
 }
@@ -207,6 +235,12 @@
 
 .marquee-track {
   animation: marquee 32s linear infinite;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 /* ——— Reduced motion ——— */

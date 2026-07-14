@@ -34,6 +34,12 @@ const SECTION_ENTRANCE: Record<string, Variants> = {
   launch: sectionSmoothFade,
 }
 
-export function getSectionEntrance(sectionId: string): Variants {
+const sectionMobile: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_SOFT } },
+}
+
+export function getSectionEntrance(sectionId: string, reduced = false): Variants {
+  if (reduced) return sectionMobile
   return SECTION_ENTRANCE[sectionId] ?? sectionSmoothLeft
 }

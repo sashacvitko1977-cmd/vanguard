@@ -11,9 +11,11 @@ import { BackToTop } from './components/BackToTop'
 import { CustomCursor } from './components/CustomCursor'
 import { GlobalVideoBackground } from './components/GlobalVideoBackground'
 import { RainOverlay } from './components/RainOverlay'
+import { useReducedEffects } from './hooks/useReducedEffects'
 import { SECTIONS } from './lib/data'
 
 export default function App() {
+  const reducedEffects = useReducedEffects()
   const [menuOpen, setMenuOpen] = useState(false)
   const [walletOpen, setWalletOpen] = useState(false)
   const [toast, setToast] = useState('')
@@ -42,8 +44,8 @@ export default function App() {
   return (
     <>
       <GlobalVideoBackground />
-      <RainOverlay />
-      <div className="grain-overlay" aria-hidden="true" />
+      {!reducedEffects && <RainOverlay />}
+      {!reducedEffects && <div className="grain-overlay" aria-hidden="true" />}
       <CustomCursor />
       <ScrollProgress />
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
