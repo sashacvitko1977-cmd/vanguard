@@ -12,6 +12,11 @@
     --signal-bright: #a78bfa;
     --radius-card: 1rem;
     --radius-pill: 999px;
+    --neon-white: rgba(255, 255, 255, 0.07);
+    --neon-violet: rgba(139, 92, 246, 0.05);
+    --neon-blood: rgba(196, 30, 58, 0.28);
+    --shadow-neon: rgba(139, 92, 246, 0.1);
+    --grain-opacity: 0.042;
   }
 
   html {
@@ -85,12 +90,12 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-  .grain-overlay {
-    opacity: 0.022;
+  :root {
+    --grain-opacity: 0.034;
   }
 
   .video-bg {
-    filter: brightness(0.62) !important;
+    filter: brightness(0.64) saturate(0.92) !important;
   }
 
   .section-glow {
@@ -116,74 +121,61 @@
   transform: skewX(-12deg);
   border-radius: 1px;
   background: linear-gradient(180deg, #c41e3a 0%, #8b5cf6 55%, #6d28d9 100%);
-  box-shadow: 0 0 14px rgba(196, 30, 58, 0.28);
+  box-shadow: 0 0 10px rgba(196, 30, 58, 0.18);
 }
 
-/* ——— VANGUARD diagonal pattern ——— */
-.vanguard-pattern {
-  opacity: 0.45;
-  background-image:
-    repeating-linear-gradient(
-      -12deg,
-      transparent,
-      transparent 72px,
-      rgba(139, 92, 246, 0.025) 72px,
-      rgba(139, 92, 246, 0.025) 73px
-    ),
-    repeating-linear-gradient(
-      -12deg,
-      transparent,
-      transparent 144px,
-      rgba(196, 30, 58, 0.012) 144px,
-      rgba(196, 30, 58, 0.012) 145px
-    );
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 20%, transparent 75%);
+/* ——— Video atmosphere ——— */
+.video-bg {
+  filter: brightness(0.66) saturate(0.95);
+  object-position: 50% 40%;
 }
 
-/* ——— Film grain ——— */
+.video-vignette {
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 45%,
+    transparent 35%,
+    rgba(3, 3, 8, 0.45) 100%
+  );
+}
+
+/* ——— Film grain (лёгкий) ——— */
 .grain-overlay {
   pointer-events: none;
   position: fixed;
   inset: 0;
   z-index: 2;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: var(--grain-opacity);
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
-  background-size: 180px 180px;
+  background-size: 200px 200px;
 }
 
-@media (hover: none), (pointer: coarse) {
-  .grain-overlay {
-    opacity: 0.02;
-  }
-}
-
-/* ——— Neon / signal ——— */
+/* ——— Приглушённые neon-glow и тени ——— */
 .neon-glow {
   text-shadow:
-    0 0 14px rgba(255, 255, 255, 0.08),
-    0 0 28px rgba(139, 92, 246, 0.06);
+    0 0 12px var(--neon-white),
+    0 0 24px var(--neon-violet);
 }
 
 .blood-glow {
   text-shadow:
-    0 0 14px rgba(196, 30, 58, 0.35),
-    0 0 28px rgba(127, 29, 29, 0.18);
+    0 0 12px var(--neon-blood),
+    0 0 22px rgba(127, 29, 29, 0.12);
 }
 
 .neon-border {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
 }
 
 .neon-border:hover {
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-    0 0 24px rgba(139, 92, 246, 0.12);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 0 14px var(--shadow-neon);
 }
 
 .shadow-neon {
-  box-shadow: 0 0 16px rgba(139, 92, 246, 0.12);
+  box-shadow: 0 0 12px var(--shadow-neon);
 }
 
 /* ——— Card shell ——— */

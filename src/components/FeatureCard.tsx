@@ -6,7 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 
 const accentMap = {
   violet: {
-    ring: 'group-hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]',
+    ring: 'group-hover:shadow-[0_0_20px_rgba(139,92,246,0.08)]',
     icon: 'text-violet-300 bg-violet-500/12 border-violet-400/20',
     tag: 'text-violet-200/90 bg-violet-500/12 border-violet-400/25',
     metric: 'text-violet-300',
@@ -16,7 +16,7 @@ const accentMap = {
     mockupAccent: 'bg-violet-500/30',
   },
   cyan: {
-    ring: 'group-hover:shadow-[0_0_40px_rgba(34,211,238,0.12)]',
+    ring: 'group-hover:shadow-[0_0_20px_rgba(34,211,238,0.07)]',
     icon: 'text-cyan-300 bg-cyan-500/12 border-cyan-400/20',
     tag: 'text-cyan-200/90 bg-cyan-500/12 border-cyan-400/25',
     metric: 'text-cyan-300',
@@ -26,7 +26,7 @@ const accentMap = {
     mockupAccent: 'bg-cyan-400/30',
   },
   amber: {
-    ring: 'group-hover:shadow-[0_0_40px_rgba(251,191,36,0.12)]',
+    ring: 'group-hover:shadow-[0_0_20px_rgba(251,191,36,0.07)]',
     icon: 'text-amber-300 bg-amber-500/12 border-amber-400/20',
     tag: 'text-amber-200/90 bg-amber-500/12 border-amber-400/25',
     metric: 'text-amber-300',
@@ -36,7 +36,7 @@ const accentMap = {
     mockupAccent: 'bg-amber-400/30',
   },
   rose: {
-    ring: 'group-hover:shadow-[0_0_40px_rgba(244,63,94,0.12)]',
+    ring: 'group-hover:shadow-[0_0_20px_rgba(244,63,94,0.07)]',
     icon: 'text-rose-300 bg-rose-500/12 border-rose-400/20',
     tag: 'text-rose-200/90 bg-rose-500/12 border-rose-400/25',
     metric: 'text-rose-300',
@@ -46,7 +46,7 @@ const accentMap = {
     mockupAccent: 'bg-rose-400/30',
   },
   emerald: {
-    ring: 'group-hover:shadow-[0_0_40px_rgba(52,211,153,0.12)]',
+    ring: 'group-hover:shadow-[0_0_20px_rgba(52,211,153,0.07)]',
     icon: 'text-emerald-300 bg-emerald-500/12 border-emerald-400/20',
     tag: 'text-emerald-200/90 bg-emerald-500/12 border-emerald-400/25',
     metric: 'text-emerald-300',

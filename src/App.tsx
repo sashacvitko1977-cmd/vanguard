@@ -7,7 +7,7 @@ import { MobileMenu } from './components/MobileMenu'
 import { WalletModal } from './components/WalletModal'
 import { Toast } from './components/Toast'
 import { BackToTop } from './components/BackToTop'
-import { GlobalVideoBackground } from './components/GlobalVideoBackground'
+import { Atmosphere } from './components/Atmosphere'
 import { SECTIONS } from './lib/data'
 
 export default function App() {
@@ -38,9 +38,7 @@ export default function App() {
 
   return (
     <>
-      <GlobalVideoBackground />
-      <div className="grain-overlay" aria-hidden="true" />
-      <div className="vanguard-pattern pointer-events-none fixed inset-0 z-[1]" aria-hidden="true" />
+      <Atmosphere />
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
       <main className="relative z-10">
         <Hero />
