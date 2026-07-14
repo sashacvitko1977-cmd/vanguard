@@ -4,11 +4,12 @@ function detectReducedEffects() {
   if (typeof window === 'undefined') return true
 
   const coarse = window.matchMedia('(hover: none), (pointer: coarse)').matches
+  const narrow = window.matchMedia('(max-width: 768px)').matches
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
   const saveData = conn?.saveData === true
 
-  return coarse || reducedMotion || saveData
+  return coarse || narrow || reducedMotion || saveData
 }
 
 /** Touch / low-power devices — skip heavy canvas, video, parallax */

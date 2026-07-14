@@ -47,7 +47,7 @@ export default function App() {
       {!reducedEffects && <RainOverlay />}
       {!reducedEffects && <div className="grain-overlay" aria-hidden="true" />}
       <CustomCursor />
-      <ScrollProgress />
+      {!reducedEffects && <ScrollProgress />}
       <Header onWallet={() => setWalletOpen(true)} onMenuOpen={() => setMenuOpen(true)} />
       <main className="relative z-10">
         <Hero />
